@@ -11,14 +11,22 @@ import UserAvatar from "src/components/user/userAvatar";
 import ScaleLoading from "src/components/loading/scaleLoading";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import PostMoreOptions from "../postMoreOptions";
+import moment from "moment";
+import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 
 interface IProps {
 	postId;
 	isInModal?: boolean;
 	initialData?;
+	onCloseModal?: () => void;
 }
 
-const PostDetails = ({ postId, isInModal, initialData }: IProps) => {
+const PostDetails = ({
+	postId,
+	isInModal,
+	initialData,
+	onCloseModal,
+}: IProps) => {
 	const { data, error } = useSWR(
 		isInModal && postId && `/api/posts/post/${postId}`,
 		fetcher
@@ -28,7 +36,6 @@ const PostDetails = ({ postId, isInModal, initialData }: IProps) => {
 		return initialData.error ? { error: initialData.error } : initialData.data;
 	}, [data, error, initialData, isInModal]);
 	const [moreOptionsIsOpen, setMoreOptionsIsOpen] = useState<boolean>(false);
-
 	const {
 		isLiked,
 		likeHandler,
@@ -45,39 +52,54 @@ const PostDetails = ({ postId, isInModal, initialData }: IProps) => {
 				<ScaleLoading center marginTop={30} />
 			) : (
 				<Container isInModal={isInModal}>
-					<Column1>
-						<Link passHref href={`/profile/${postData.creator}`}>
-							<a>
-								<UserAvatar
-									src={postData.creatorImage}
-									username={postData.creator}
-									size={48}
-								/>
-							</a>
-						</Link>
-					</Column1>
-					<Column2>
-						<UsernameRow>
+					<Row1>
+						<UserAvatarContainer>
 							<Link passHref href={`/profile/${postData.creator}`}>
-								<a>{postData.creator}</a>
+								<a>
+									<UserAvatar
+										src={postData.creatorImage}
+										username={postData.creator}
+										size={45}
+									/>
+								</a>
 							</Link>
-							<div style={{ position: "absolute", top: 0, right: 0 }}>
-								<div style={{ position: "relative" }}>
-									<CustomIconButton
-										Icon={MoreHorizIcon}
-										size="small"
-										ariaLabel="Open more options"
-										onClick={() => setMoreOptionsIsOpen((prev) => !prev)}
-									/>
-									<PostMoreOptions
-										isOpen={moreOptionsIsOpen}
-										onClose={() => setMoreOptionsIsOpen(false)}
-										postId={postData._id}
-										postCreator={postData.creator}
-									/>
-								</div>
+						</UserAvatarContainer>
+						<UsernameAndCreatedAtColumn>
+							<UsernameRow>
+								<Link passHref href={`/profile/${postData.creator}`}>
+									<a>{postData.creator}</a>
+								</Link>
+							</UsernameRow>
+							<CreatedAt>{moment(postData.createdAt).fromNow()}</CreatedAt>
+						</UsernameAndCreatedAtColumn>
+						<OptionsButtons>
+							<div style={{ position: "relative" }}>
+								<CustomIconButton
+									Icon={MoreHorizIcon}
+									size="small"
+									ariaLabel="Open more options"
+									onClick={() => setMoreOptionsIsOpen((prev) => !prev)}
+									style={{ opacity: 0.7 }}
+								/>
+								<PostMoreOptions
+									isOpen={moreOptionsIsOpen}
+									onClose={() => setMoreOptionsIsOpen(false)}
+									postId={postData._id}
+									postCreator={postData.creator}
+								/>
 							</div>
-						</UsernameRow>
+							{isInModal && (
+								<CustomIconButton
+									Icon={CloseRoundedIcon}
+									size="small"
+									ariaLabel="Open more options"
+									onClick={onCloseModal}
+									style={{ opacity: 0.7 }}
+								/>
+							)}
+						</OptionsButtons>
+					</Row1>
+					<Row2>
 						<MessageRow>{postData.message}</MessageRow>
 						<ImageContainer>
 							<ImageWrapper>
@@ -129,7 +151,7 @@ const PostDetails = ({ postId, isInModal, initialData }: IProps) => {
 								</ActionItem>
 							)}
 						</Actions>
-					</Column2>
+					</Row2>
 				</Container>
 			)}
 		</>
@@ -140,12 +162,13 @@ export default PostDetails;
 
 const Container = styled.div`
 	display: flex;
+	flex-direction: column;
 	max-width: 815px;
 	margin: ${({ isInModal }) => (isInModal ? "30px auto" : "0 auto")};
 	background: ${({ theme }) => theme.colors.background.secondary};
 	border-radius: 3px;
 	overflow: hidden;
-	padding: 0.8rem 1.6rem;
+	padding: 1.5rem;
 	animation: ${({ isInModal }) => !isInModal && "appear 0.25s ease"};
 
 	@media ${({ theme }) => theme.breakpoints.md} {
@@ -161,29 +184,53 @@ const Container = styled.div`
 	}
 `;
 
-const Column1 = styled.div`
-	margin-bottom: auto;
-	margin-right: 12px;
+const Row1 = styled.div`
+	position: relative;
+	display: flex;
+`;
+const UserAvatarContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+`;
+const UsernameAndCreatedAtColumn = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	margin-left: 10px;
 `;
 
-const Column2 = styled.div`
+const OptionsButtons = styled.div`
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	gap: 0 10px;
+`;
+
+const Row2 = styled.div`
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
 	overflow: hidden;
+	margin-top: 10px;
 `;
 
 const UsernameRow = styled.div`
 	font-weight: 600;
-	font-size: 1.5rem;
-	margin-bottom: 4px;
+	font-size: 1.6rem;
+`;
+
+const CreatedAt = styled.div`
+	color: ${({ theme }) => theme.colors.color.primary};
+	opacity: 0.65;
+	font-size: 1.3rem;
 `;
 
 const MessageRow = styled.div`
 	display: inline-block;
 	font-size: 1.6rem;
-	margin-bottom: 8px;
+	margin-bottom: 10px;
 	width: 100%;
 	flex-grow: 1;
 	overflow-wrap: break-word;
@@ -228,7 +275,7 @@ const ImagePost = styled.img`
 const TagsRow = styled.ul`
 	display: flex;
 	flex-wrap: wrap;
-	margin: 10px 0;
+	margin-top: 10px;
 	gap: 8px;
 	word-break: break-word;
 `;
@@ -257,7 +304,7 @@ const Actions = styled.div`
 	place-content: ${({ isInModal }) =>
 		isInModal ? "center space-around" : "center flex-start"};
 	gap: 0 10px;
-	padding: 1rem;
+	margin-top: 10px;
 	gap: 7px;
 `;
 

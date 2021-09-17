@@ -73,7 +73,11 @@ const PostCard = React.forwardRef(
 					onClose={() => setPostDetailsModalIsOpen(false)}
 					scroll={true}
 				>
-					<PostDetails postId={_id} isInModal={true} />
+					<PostDetails
+						postId={_id}
+						isInModal={true}
+						onCloseModal={() => setPostDetailsModalIsOpen(false)}
+					/>
 				</Modal>
 
 				<PostItem
@@ -108,6 +112,7 @@ const PostCard = React.forwardRef(
 								Icon={MoreHorizIcon}
 								ariaLabel="Open more options"
 								onClick={() => setMoreOptionsIsOpen((prev) => !prev)}
+								style={{ opacity: 0.7 }}
 							/>
 							<PostMoreOptions
 								isOpen={moreOptionsIsOpen}

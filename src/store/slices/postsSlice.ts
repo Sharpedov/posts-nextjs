@@ -63,6 +63,7 @@ export const editPost = createAsyncThunk(
 				.then((res) => res.data);
 
 			await mutatePosts();
+			await mutate(`/api/posts/post/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Post has been edited" }));
@@ -142,6 +143,7 @@ export const deletePost = createAsyncThunk(
 				.then((res) => res.data);
 
 			await mutatePosts();
+			await mutate(`/api/posts/post/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Post has been deleted" }));
