@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonBase, IconButton } from "@material-ui/core";
@@ -169,150 +169,144 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 			<div>{postError}</div>
 		</div>
 	) : (
-		<AnimateSharedLayout>
-			<FormProvider {...methods}>
-				<FocusTrap>
-					<Form
+		<FocusTrap>
+			<AnimateSharedLayout>
+				<Container layout>
+					{(createLoading || editLoading || !!uploadProgress) && (
+						<LinearLoading progress={uploadProgress} />
+					)}
+					<MobileActionsRow
 						layout
-						onSubmit={handleSubmit(onSubmit)}
-						onKeyDown={(e) => checkKeyDown(e)}
+						initial={{
+							opacity: 0,
+						}}
+						animate={{
+							opacity: 1,
+						}}
+						exit={{ opacity: 0 }}
 					>
-						{(createLoading || editLoading || !!uploadProgress) && (
-							<LinearLoading progress={uploadProgress} />
-						)}
-						<MobileActionsRow
-							layout
-							initial={{
-								opacity: 0,
-							}}
-							animate={{
-								opacity: 1,
-							}}
-							exit={{ opacity: 0 }}
+						<CustomIconButton
+							size="small"
+							ariaLabel="Close create post modal"
+							Icon={CloseRoundedIcon}
+							onClick={onClose}
+						/>
+						<CustomButton
+							size="small"
+							type="submit"
+							disabled={!selectedImage || tags.length === 0}
+							loading={createLoading || editLoading || uploadPostUrlLoading}
 						>
-							<CustomIconButton
-								size="small"
-								ariaLabel="Close create post modal"
-								Icon={CloseRoundedIcon}
-								onClick={onClose}
-							/>
-							<CustomButton
-								size="small"
-								type="submit"
-								disabled={!selectedImage || tags.length === 0}
-								loading={createLoading || editLoading || uploadPostUrlLoading}
-							>
-								{editMode ? "Edit" : "Publish now"}
-							</CustomButton>
-						</MobileActionsRow>
-						<UserInfo layout>
-							<UserAvatar src={user.avatar} username={user.username} />
-							<span>{user.username}</span>
-						</UserInfo>
-						<Content layout>
-							<AnimatePresence>
-								{selectedImage && (
-									<SelectedImageContainer
-										layout
-										initial={{
-											scale: 0.9,
-											opacity: 0,
-											transition: { duration: 0.35 },
-										}}
-										animate={{
-											scale: 1,
-											opacity: 1,
-											transition: { duration: 0.35 },
-										}}
-										exit={{ opacity: 0 }}
-									>
-										{!createLoading ?? !editLoading ? (
-											<RemoveImageButton onClick={removeImage} tabIndex={-1}>
-												<CloseRoundedIcon className="createPostFormRemoveImageButton__icon" />
-											</RemoveImageButton>
-										) : null}
-										<SelectedImage
-											src={selectedImage}
-											alt="Selected image"
-											layout
-										/>
-									</SelectedImageContainer>
-								)}
-							</AnimatePresence>
-							<motion.textarea
-								{...register("message")}
-								placeholder="Message..."
-								defaultValue={editMode && post.message}
-								autoComplete="off"
-								layout
-							/>
-							{errors.message && (
-								<ErrorMessage layout>{errors.message.message}</ErrorMessage>
-							)}
-
-							<TagsRow>
-								<TagsInput
-									tags={tags ?? []}
-									setTags={setTags}
-									flexibility={true}
-									placeholder="Press enter to add tag"
-								/>
-							</TagsRow>
-						</Content>
-						<UploadOptionsContainer layout>
-							<UploadOptions>
-								<UploadOption
+							{editMode ? "Edit" : "Publish now"}
+						</CustomButton>
+					</MobileActionsRow>
+					<UserInfo layout>
+						<UserAvatar src={user.avatar} username={user.username} />
+						<span>{user.username}</span>
+					</UserInfo>
+					<Content layout>
+						<AnimatePresence>
+							{selectedImage && (
+								<SelectedImageContainer
 									layout
-									onClick={() => filepickerRef.current.click()}
-									aria-label="Upload image file"
+									initial={{
+										scale: 0.9,
+										opacity: 0,
+										transition: { duration: 0.35 },
+									}}
+									animate={{
+										scale: 1,
+										opacity: 1,
+										transition: { duration: 0.35 },
+									}}
+									exit={{ opacity: 0 }}
 								>
-									<ImageOutlinedIcon className="createPostFormUploadOption__icon" />
-									<input
-										ref={filepickerRef}
-										type="file"
-										onChange={(e) => addImageHandler(e)}
-										hidden
-										accept="image/png, image/jpeg"
+									{!createLoading ?? !editLoading ? (
+										<RemoveImageButton onClick={removeImage} tabIndex={-1}>
+											<CloseRoundedIcon className="createPostFormRemoveImageButton__icon" />
+										</RemoveImageButton>
+									) : null}
+									<SelectedImage
+										src={selectedImage}
+										alt="Selected image"
+										layout
 									/>
-								</UploadOption>
-							</UploadOptions>
-
-							<span>Allowed Formats: JPEG, PNG. Max size: 4mb.</span>
-						</UploadOptionsContainer>
-						{uploadError && <UploadError>{uploadError}</UploadError>}
-
-						<ActionsRow
+								</SelectedImageContainer>
+							)}
+						</AnimatePresence>
+						<motion.textarea
+							{...register("message")}
+							placeholder="Message..."
+							defaultValue={editMode && post.message}
+							autoComplete="off"
 							layout
-							initial={{
-								opacity: 0,
-							}}
-							animate={{
-								opacity: 1,
-							}}
-							exit={{ opacity: 0 }}
-						>
-							<CustomButton size="small" onClick={onClose} color="red">
-								Close
-							</CustomButton>
-							<CustomButton
-								size="small"
-								type="submit"
-								disabled={!selectedImage || tags.length === 0}
-								loading={createLoading || editLoading || uploadPostUrlLoading}
+						/>
+						{errors.message && (
+							<ErrorMessage layout>{errors.message.message}</ErrorMessage>
+						)}
+
+						<TagsRow>
+							<TagsInput
+								tags={tags ?? []}
+								setTags={setTags}
+								flexibility={true}
+								placeholder="Press enter to add tag"
+							/>
+						</TagsRow>
+					</Content>
+					<UploadOptionsContainer layout>
+						<UploadOptions>
+							<UploadOption
+								layout
+								onClick={() => filepickerRef.current.click()}
+								aria-label="Upload image file"
 							>
-								{editMode ? "Edit" : "Publish now"}
-							</CustomButton>
-						</ActionsRow>
-					</Form>
-				</FocusTrap>
-			</FormProvider>
-		</AnimateSharedLayout>
+								<ImageOutlinedIcon className="createPostFormUploadOption__icon" />
+								<input
+									ref={filepickerRef}
+									type="file"
+									onChange={(e) => addImageHandler(e)}
+									hidden
+									accept="image/png, image/jpeg"
+								/>
+							</UploadOption>
+						</UploadOptions>
+
+						<span>Allowed Formats: JPEG, PNG. Max size: 4mb.</span>
+					</UploadOptionsContainer>
+					{uploadError && <UploadError>{uploadError}</UploadError>}
+
+					<ActionsRow
+						layout
+						initial={{
+							opacity: 0,
+						}}
+						animate={{
+							opacity: 1,
+						}}
+						exit={{ opacity: 0 }}
+					>
+						<CustomButton size="small" onClick={onClose} color="red">
+							Close
+						</CustomButton>
+						<CustomButton
+							size="small"
+							onClick={handleSubmit(onSubmit)}
+							disabled={!selectedImage || tags.length === 0}
+							loading={createLoading || editLoading || uploadPostUrlLoading}
+						>
+							{editMode ? "Edit" : "Publish now"}
+						</CustomButton>
+					</ActionsRow>
+				</Container>
+			</AnimateSharedLayout>
+		</FocusTrap>
 	);
 };
 
 export default CreatePostForm;
 
-const Form = styled(motion.form)`
+const Container = styled(motion.div)`
 	position: relative;
 	display: flex;
 	flex-direction: column;
