@@ -19,7 +19,7 @@ export const darkGrayTheme = {
 			red: "rgb(232,93,117)",
 		},
 		skeleton: {
-			primary: "rgba(18, 18, 18, 0.4)",
+			primary: "rgba(255, 255, 255, 0.025)",
 		},
 		footer: {
 			primary: "#11161D",

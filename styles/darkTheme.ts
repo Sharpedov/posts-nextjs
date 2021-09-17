@@ -19,7 +19,7 @@ export const darkTheme = {
 			red: "rgb(232,93,117)",
 		},
 		skeleton: {
-			primary: "rgba(14, 14, 14, 0.4)",
+			primary: "rgba(255, 255, 255, 0.06)",
 		},
 		footer: {
 			primary: "#11161D",
