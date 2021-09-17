@@ -13,6 +13,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import PostMoreOptions from "../postMoreOptions";
 import moment from "moment";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
+import { motion } from "framer-motion";
 
 interface IProps {
 	postId;
@@ -49,9 +50,13 @@ const PostDetails = ({
 			{postData?.error ? (
 				<div>{postData.error.message}</div>
 			) : !postData ? (
-				<ScaleLoading center marginTop={30} />
+				<ScaleLoading center marginTop={30} marginBottom={!isInModal && 600} />
 			) : (
-				<Container isInModal={isInModal}>
+				<Container
+					isInModal={isInModal}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1, transition: { duration: 0.2 } }}
+				>
 					<Row1>
 						<UserAvatarContainer>
 							<Link passHref href={`/profile/${postData.creator}`}>
@@ -160,7 +165,7 @@ const PostDetails = ({
 
 export default PostDetails;
 
-const Container = styled.div`
+const Container = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	max-width: 815px;
@@ -168,25 +173,13 @@ const Container = styled.div`
 	background: ${({ theme }) => theme.colors.background.secondary};
 	border-radius: 3px;
 	overflow: hidden;
-	padding: 1.5rem;
-	animation: ${({ isInModal }) => !isInModal && "appear 0.25s ease"};
-
-	@media ${({ theme }) => theme.breakpoints.md} {
-	}
-
-	@keyframes appear {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
+	padding: 1.5rem 0;
 `;
 
 const Row1 = styled.div`
 	position: relative;
 	display: flex;
+	padding: 0 1.5rem;
 `;
 const UserAvatarContainer = styled.div`
 	display: flex;
@@ -200,10 +193,9 @@ const UsernameAndCreatedAtColumn = styled.div`
 `;
 
 const OptionsButtons = styled.div`
-	position: absolute;
-	top: 0;
-	right: 0;
 	display: flex;
+	align-self: flex-start;
+	margin-left: auto;
 	gap: 0 10px;
 `;
 
@@ -232,6 +224,7 @@ const MessageRow = styled.div`
 	font-size: 1.6rem;
 	margin-bottom: 10px;
 	width: 100%;
+	padding: 0 1.5rem;
 	flex-grow: 1;
 	overflow-wrap: break-word;
 `;
@@ -277,6 +270,7 @@ const TagsRow = styled.ul`
 	flex-wrap: wrap;
 	margin-top: 10px;
 	gap: 8px;
+	padding: 0 1.5rem;
 	word-break: break-word;
 `;
 
@@ -304,6 +298,7 @@ const Actions = styled.div`
 	place-content: ${({ isInModal }) =>
 		isInModal ? "center space-around" : "center flex-start"};
 	gap: 0 10px;
+	padding: 0 1.5rem;
 	margin-top: 10px;
 	gap: 7px;
 `;
