@@ -2,7 +2,6 @@ import React from "react";
 import Head from "next/head";
 import SettingsTemplate from "src/templates/profile/settings";
 import ProfileSettings from "src/templates/profile/settings/profileSettings";
-import cookie from "cookie";
 
 export default function AccountProfilePage() {
 	return (
@@ -16,16 +15,4 @@ export default function AccountProfilePage() {
 			</SettingsTemplate>
 		</>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
-
-	if (!cookies.auth) {
-		res.writeHead(302, { Location: "/" });
-		res.end();
-	}
-
-	return { props: {} };
 }

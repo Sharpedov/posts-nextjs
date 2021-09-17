@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, {
 	createContext,
 	useContext,
@@ -7,6 +8,7 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUser } from "src/store/slices/authSlice";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext(null);
 
@@ -27,6 +29,7 @@ const AuthProvider = ({ children }: IProps) => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [isLogged, setIsLogged] = useState<boolean>(false);
 	const dispatch = useDispatch();
+	const router = useRouter();
 
 	useEffect(() => {
 		setIsLogged(authUser ? true : false);
@@ -37,6 +40,17 @@ const AuthProvider = ({ children }: IProps) => {
 	useEffect(() => {
 		dispatch(getLoggedUser());
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (
+			router.pathname === "/" ||
+			router.pathname === "/login" ||
+			router.pathname === "/createAccount"
+		)
+			return;
+
+		!JSON.parse(Cookies.get("isLogged")) && router.push("/");
+	}, [isLogged, loading, router]);
 
 	const memoredValue = useMemo(
 		() => ({

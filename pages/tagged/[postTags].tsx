@@ -3,7 +3,6 @@ import Head from "next/head";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import Posts from "src/components/posts";
-import cookie from "cookie";
 
 export default function TaggedPage() {
 	const {
@@ -25,18 +24,6 @@ export default function TaggedPage() {
 			</MainContainer>
 		</>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
-
-	if (!cookies.auth) {
-		res.writeHead(302, { Location: "/" });
-		res.end();
-	}
-
-	return { props: {} };
 }
 
 const MainContainer = styled.main`

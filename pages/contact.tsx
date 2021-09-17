@@ -2,7 +2,6 @@ import React from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import CustomButton from "src/components/customButton";
-import cookie from "cookie";
 
 export default function HomePage() {
 	return (
@@ -53,18 +52,6 @@ export default function HomePage() {
 			</MainContainer>
 		</>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
-
-	if (!cookies.auth) {
-		res.writeHead(302, { Location: "/" });
-		res.end();
-	}
-
-	return { props: {} };
 }
 
 const MainContainer = styled.main`

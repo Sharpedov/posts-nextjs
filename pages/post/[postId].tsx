@@ -9,7 +9,6 @@ import { CardActionArea } from "@material-ui/core";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import cookie from "cookie";
 
 export default function PostPage() {
 	const {
@@ -92,18 +91,6 @@ export default function PostPage() {
 			</MainContainer>
 		</>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
-
-	if (!cookies.auth) {
-		res.writeHead(302, { Location: "/" });
-		res.end();
-	}
-
-	return { props: {} };
 }
 
 const MainContainer = styled.main`

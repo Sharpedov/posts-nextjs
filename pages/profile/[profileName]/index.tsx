@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import ProfileTemplate from "src/templates/profile";
 import ProfileOverview from "src/templates/profile/profileOverview";
-import cookie from "cookie";
 
 export default function ProfilePage() {
 	const { query } = useRouter();
@@ -22,16 +21,4 @@ export default function ProfilePage() {
 			</ProfileTemplate>
 		</>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
-
-	if (!cookies.auth) {
-		res.writeHead(302, { Location: "/" });
-		res.end();
-	}
-
-	return { props: {} };
 }
