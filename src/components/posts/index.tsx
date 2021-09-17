@@ -1,25 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Masonry from "react-masonry-css";
-import { Button } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { useInfiniteQuery } from "src/hooks/useInfiniteQuery";
 import PostCard from "src/components/post/postCard";
 import ScaleLoading from "src/components/loading/scaleLoading";
 import Link from "next/link";
 import { addMutatePosts } from "src/store/slices/postsSlice";
+import { Skeleton } from "@material-ui/lab";
 
 interface IProps {
 	queryKeyWithLimit: string;
 }
 
-const sortByData = [
-	{ value: "New", sort: "-createdAt" },
-	{ value: "Top", sort: "+createdAt" },
-];
+const sortByData = [{ value: "New", sort: "-createdAt" }];
 
 const Posts = ({ queryKeyWithLimit }: IProps) => {
-	const [sortBy, setSortBy] = useState(sortByData[0]);
 	const dispatch = useDispatch();
 	const {
 		fetchNextPage,
@@ -30,9 +26,8 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 		hasNextPage,
 		error,
 		mutate,
-		setSize,
 	} = useInfiniteQuery({
-		queryKey: `${queryKeyWithLimit}&sort=${sortBy.sort}`,
+		queryKey: `${queryKeyWithLimit}&sort=${sortByData[0].sort}`,
 	});
 	const observer = useRef(null);
 
@@ -54,14 +49,14 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 		[isLoadingMore, hasNextPage, fetchNextPage]
 	);
 
-	const changeSortOptionHandler = useCallback(
-		(option) => {
-			setSize(0);
-			mutate();
-			setSortBy(option);
-		},
-		[setSize, mutate]
-	);
+	// const changeSortOptionHandler = useCallback(
+	// 	(option) => {
+	// 		setSize(0);
+	// 		mutate();
+	// 		setSortBy(option);
+	// 	},
+	// 	[setSize, mutate]
+	// );
 
 	const breakpointColumnsObj = {
 		default: 4,
@@ -73,7 +68,7 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 	return (
 		<>
 			<Container>
-				<SortBar>
+				{/* <SortBar>
 					<SortByOptions>
 						{sortByData.map((option) => (
 							<SortByOption
@@ -86,13 +81,25 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 							</SortByOption>
 						))}
 					</SortByOptions>
-				</SortBar>
+				</SortBar> */}
 				{error ? (
 					<div>{error.message}</div>
 				) : (
 					<>
 						{isLoadingInitialData ? (
-							<ScaleLoading center marginTop={30} />
+							<Masonry
+								breakpointCols={breakpointColumnsObj}
+								className="my-masonry-grid"
+								columnClassName="my-masonry-grid_column"
+							>
+								{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, i) => (
+									<PostCardSkeleton
+										key={`postCardSkeleton-${i}`}
+										variant="rect"
+										animation="wave"
+									/>
+								))}
+							</Masonry>
 						) : (
 							<Masonry
 								breakpointCols={breakpointColumnsObj}
@@ -108,9 +115,7 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 								))}
 							</Masonry>
 						)}
-						{!isLoadingInitialData && isLoadingMore && (
-							<ScaleLoading center marginTop={30} />
-						)}
+						{isLoadingMore && <ScaleLoading center marginTop={30} />}
 						{isEmpty ? (
 							<div
 								style={{
@@ -147,60 +152,74 @@ const Container = styled.div`
 	min-height: 100vh;
 `;
 
-const SortBar = styled.div`
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-`;
-
-const SortByOptions = styled.ul`
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	align-items: center;
-	flex-grow: 1;
+const PostCardSkeleton = styled(Skeleton)`
+	padding-bottom: 165%;
+	margin-bottom: 15px;
+	border-radius: 3px;
+	background: ${({ theme }) => theme.colors.skeleton.primary};
 
 	@media ${({ theme }) => theme.breakpoints.sm} {
-		grid-template-columns: repeat(2, auto);
-		justify-content: space-evenly;
+		padding-bottom: 175%;
 	}
-	@media ${({ theme }) => theme.breakpoints.md} {
-		flex-grow: 0;
-		justify-content: normal;
+	@media ${({ theme }) => theme.breakpoints.xl} {
+		padding-bottom: 180%;
 	}
 `;
 
-const SortByOption = styled(Button)`
-	color: ${({ theme, active }) =>
-		active ? theme.colors.button.primary : theme.colors.color.primary};
-	padding: 1rem 2rem;
-	cursor: pointer;
-	border-radius: 0;
-	text-transform: none;
-	font-size: 16px;
-	pointer-events: ${({ active }) => active && "none"};
+// const SortBar = styled.div`
+// 	display: flex;
+// 	align-items: center;
+// 	margin-bottom: 10px;
+// `;
 
-	&:disabled {
-		opacity: 0.5;
-		color: ${({ theme, active }) =>
-			active ? theme.colors.button.primary : theme.colors.color.primary};
-	}
+// const SortByOptions = styled.ul`
+// 	display: grid;
+// 	grid-template-columns: repeat(2, 1fr);
+// 	align-items: center;
+// 	flex-grow: 1;
 
-	&:after {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 2px;
-		background: ${({ theme }) => theme.colors.button.primary};
-		opacity: ${({ active }) => (active ? `1` : "0")};
-	}
+// 	@media ${({ theme }) => theme.breakpoints.sm} {
+// 		grid-template-columns: repeat(2, auto);
+// 		justify-content: space-evenly;
+// 	}
+// 	@media ${({ theme }) => theme.breakpoints.md} {
+// 		flex-grow: 0;
+// 		justify-content: normal;
+// 	}
+// `;
 
-	> span {
-		font-weight: 500;
-	}
+// const SortByOption = styled(Button)`
+// 	color: ${({ theme, active }) =>
+// 		active ? theme.colors.button.primary : theme.colors.color.primary};
+// 	padding: 1rem 2rem;
+// 	cursor: pointer;
+// 	border-radius: 0;
+// 	text-transform: none;
+// 	font-size: 16px;
+// 	pointer-events: ${({ active }) => active && "none"};
 
-	&:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-`;
+// 	&:disabled {
+// 		opacity: 0.5;
+// 		color: ${({ theme, active }) =>
+// 			active ? theme.colors.button.primary : theme.colors.color.primary};
+// 	}
+
+// 	&:after {
+// 		content: "";
+// 		position: absolute;
+// 		bottom: 0;
+// 		left: 0;
+// 		right: 0;
+// 		height: 2px;
+// 		background: ${({ theme }) => theme.colors.button.primary};
+// 		opacity: ${({ active }) => (active ? `1` : "0")};
+// 	}
+
+// 	> span {
+// 		font-weight: 500;
+// 	}
+
+// 	&:hover {
+// 		background: rgba(255, 255, 255, 0.1);
+// 	}
+// `;
