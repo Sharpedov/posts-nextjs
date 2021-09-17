@@ -16,6 +16,7 @@ import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { PostLikeHandler } from "src/utils/postLikeHandler";
 import PostMoreOptions from "./postMoreOptions";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 type RefType = HTMLDivElement;
 type IProps = {
@@ -125,7 +126,8 @@ const PostCard = React.forwardRef(
 					{image && (
 						<>
 							<ImagePostContainer>
-								<ImagePost
+								<Image
+									layout="fill"
 									src={image}
 									alt={title}
 									draggable="false"
@@ -246,18 +248,11 @@ const ImagePostContainer = styled.div`
 	position: relative;
 	width: 100%;
 	height: 100%;
+	padding-bottom: 120%;
 
 	> span {
 		color: ${({ theme }) => theme.colors.button.primary};
 	}
-`;
-
-const ImagePost = styled.img`
-	display: block;
-	width: 100%;
-	height: 100%;
-	max-height: 500px;
-	object-fit: cover;
 `;
 
 const Content = styled.div`
