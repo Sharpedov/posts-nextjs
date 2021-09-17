@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import router from "next/router";
 import { addNotification } from "./notificationsSlice";
+import Cookies from "js-cookie";
 
 interface ICreateAccount {
 	username: string;
@@ -38,14 +39,20 @@ export const getLoggedUser = createAsyncThunk(
 				.get("/api/auth/getLoggedUser")
 				.then((res) => res.data);
 
-			if (success === false) return null;
+			if (success === false) {
+				Cookies.set("isLogged", false);
+				return;
+			}
 
 			const user = await axios
 				.get(`/api/users?id=${data._id}`)
 				.then((res) => res.data.user);
 
+			Cookies.set("isLogged", true);
+
 			return user;
 		} catch (error) {
+			Cookies.set("isLogged", false);
 			throw error.response.data.message;
 		}
 	}
@@ -162,6 +169,7 @@ export const updateProfile = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async () => {
 	try {
 		await axios.post("/api/auth/logout");
+		Cookies.set("isLogged", false);
 		router.push("/");
 
 		return null;
