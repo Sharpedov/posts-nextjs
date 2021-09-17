@@ -23,7 +23,9 @@ const ProfileTemplate = ({ profileName, children }: IProps) => {
 	const { user, loading } = useAuth();
 
 	const { data: dataProfile, error: errorProfile } = useSWR(
-		profileName !== user?.username && `/api/users/${profileName}`,
+		profileName !== user?.username &&
+			!!profileName &&
+			`/api/users/${profileName}`,
 		fetcher
 	);
 

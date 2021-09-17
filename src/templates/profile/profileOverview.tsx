@@ -8,6 +8,9 @@ import { useDispatch } from "react-redux";
 import { CardActionArea } from "@material-ui/core";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
+import { Skeleton } from "@material-ui/lab";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 const ProfileOverview = (props) => {
 	const { profileName, profileData } = props;
@@ -65,17 +68,31 @@ const ProfileOverview = (props) => {
 				{error ? (
 					<div>{error.message}</div>
 				) : isLoadingInitialData ? (
-					<ScaleLoading center marginTop={15} />
+					<PostsContainer>
+						{[1, 2, 3, 4, 5, 6].map((_, i) => (
+							<PostCardSkeleton
+								variant="rect"
+								animation="wave"
+								key={`postCardSkeletonProfile-${i}`}
+							/>
+						))}
+					</PostsContainer>
 				) : (
 					<PostsContainer>
 						{fetchedData.map((post) => (
 							<Link key={post._id} passHref href={`/post/${post._id}`}>
-								<PostCard ref={lastItemRef}>
-									<PostCardImage
+								<PostCard
+									ref={lastItemRef}
+									component={motion.div}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1, transition: { duration: 0.25 } }}
+								>
+									<Image
+										layout="fill"
 										src={post.image}
 										alt={`${post.creator}'s post`}
 										draggable="false"
-										loading="lazy"
+										objectFit="cover"
 									/>
 									<PostCardOverlay>
 										<PostLikesCount>
@@ -89,7 +106,7 @@ const ProfileOverview = (props) => {
 					</PostsContainer>
 				)}
 				{!isLoadingInitialData && isLoadingMore && (
-					<ScaleLoading center marginTop={30} />
+					<ScaleLoading center marginTop={20} />
 				)}
 				{isEmpty ? (
 					<div style={{ margin: "30px auto 0" }}>No posts yet</div>
@@ -177,9 +194,14 @@ const PostsContainer = styled.div`
 	grid-gap: 5px;
 `;
 
+const PostCardSkeleton = styled(Skeleton)`
+	padding-top: 100%;
+	background: ${({ theme }) => theme.colors.skeleton.primary};
+`;
+
 const PostCard = styled(CardActionArea)`
 	position: relative;
-	padding: 0 0 100%;
+	padding-top: 100%;
 
 	&:hover {
 		> span {
