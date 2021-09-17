@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import CustomButton from "src/components/customButton";
+import { useAuth } from "src/components/authProvider";
 
 export default function HomePage() {
+	const { redirectIfNotLogged } = useAuth();
+
+	useEffect(() => {
+		redirectIfNotLogged();
+	}, [redirectIfNotLogged]);
 	return (
 		<>
 			<Head>

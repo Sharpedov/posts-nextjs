@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import PostDetails from "src/components/post/postDetails";
 import styled from "styled-components";
 import Head from "next/head";
@@ -9,8 +9,10 @@ import { CardActionArea } from "@material-ui/core";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useAuth } from "src/components/authProvider";
 
 export default function PostPage() {
+	const { redirectIfNotLogged } = useAuth();
 	const {
 		query: { postId },
 	} = useRouter();
@@ -23,6 +25,10 @@ export default function PostPage() {
 		fetcher
 	);
 	const { push } = useRouter();
+
+	useEffect(() => {
+		redirectIfNotLogged();
+	}, [redirectIfNotLogged]);
 
 	const filterRecommendedPosts = useMemo(() => {
 		if (!recommendedPosts || !postData) return;

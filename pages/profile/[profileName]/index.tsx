@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ProfileTemplate from "src/templates/profile";
 import ProfileOverview from "src/templates/profile/profileOverview";
+import { useAuth } from "src/components/authProvider";
 
 export default function ProfilePage() {
 	const { query } = useRouter();
+	const { redirectIfNotLogged } = useAuth();
+
+	useEffect(() => {
+		redirectIfNotLogged();
+	}, [redirectIfNotLogged]);
 
 	return (
 		<>
@@ -16,7 +22,7 @@ export default function ProfilePage() {
 						: "Username • Posts"}
 				</title>
 			</Head>
-			<ProfileTemplate profileName={query.profileName ?? ""}>
+			<ProfileTemplate profileName={query.profileName}>
 				<ProfileOverview />
 			</ProfileTemplate>
 		</>

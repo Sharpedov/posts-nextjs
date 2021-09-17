@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, {
 	createContext,
+	useCallback,
 	useContext,
 	useEffect,
 	useMemo,
@@ -41,24 +42,26 @@ const AuthProvider = ({ children }: IProps) => {
 		dispatch(getLoggedUser());
 	}, [dispatch]);
 
-	useEffect(() => {
-		if (
-			router.pathname === "/" ||
-			router.pathname === "/login" ||
-			router.pathname === "/createAccount"
-		)
-			return;
-
-		!JSON.parse(Cookies.get("isLogged")) && router.push("/");
-	}, [isLogged, loading, router]);
+	const redirectIfNotLogged = useCallback(
+		(redirectTo) => {
+			if (!!Cookies.get("isLogged")) {
+				return JSON.parse(Cookies.get("isLogged"))
+					? null
+					: router.push(redirectTo ?? "/");
+			}
+			router.push(redirectTo ?? "/");
+		},
+		[router]
+	);
 
 	const memoredValue = useMemo(
 		() => ({
 			user,
 			loading,
 			isLogged,
+			redirectIfNotLogged,
 		}),
-		[user, loading, isLogged]
+		[user, loading, isLogged, redirectIfNotLogged]
 	);
 
 	return (

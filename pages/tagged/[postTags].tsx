@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import Posts from "src/components/posts";
+import { useAuth } from "src/components/authProvider";
 
 export default function TaggedPage() {
+	const { redirectIfNotLogged } = useAuth();
 	const {
 		query: { postTags },
 	} = useRouter();
+
+	useEffect(() => {
+		redirectIfNotLogged();
+	}, [redirectIfNotLogged]);
 
 	return (
 		<>

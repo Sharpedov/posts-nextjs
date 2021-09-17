@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import SettingsTemplate from "src/templates/profile/settings";
 import AccountSettings from "src/templates/profile/settings/accountSettings";
+import { useAuth } from "src/components/authProvider";
 
 export default function AccountSettingsPage() {
+	const { redirectIfNotLogged } = useAuth();
+
+	useEffect(() => {
+		redirectIfNotLogged();
+	}, [redirectIfNotLogged]);
+
 	return (
 		<>
 			<Head>
