@@ -3,9 +3,9 @@ import styled, { keyframes } from "styled-components";
 import Head from "next/head";
 import CustomButton from "src/components/customButton";
 import { motion } from "framer-motion";
-import { useAuth } from "src/components/authProvider";
 import { Link as ScrollLink } from "react-scroll";
 import Image from "next/image";
+import cookie from "cookie";
 
 const backgroundData = [
 	"/images/home_background_1.jfif",
@@ -15,12 +15,7 @@ const backgroundData = [
 	"/images/home_background_5.jpg",
 ];
 
-export default function Default() {
-	const { redirectIfLogged } = useAuth();
-	useEffect(() => {
-		redirectIfLogged();
-	}, [redirectIfLogged]);
-
+export default function DefaultPage() {
 	const randomBackground = useMemo(
 		() => Math.floor(Math.random() * backgroundData.length),
 		[]
@@ -103,6 +98,18 @@ export default function Default() {
 			</Container>
 		</>
 	);
+}
+
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (cookies.auth) {
+		res.writeHead(302, { Location: "/home" });
+		res.end();
+	}
+
+	return { props: {} };
 }
 
 const appearAnimation = keyframes`

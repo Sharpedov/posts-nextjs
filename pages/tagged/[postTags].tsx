@@ -1,16 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import Posts from "src/components/posts";
-import { useAuth } from "src/components/authProvider";
+import cookie from "cookie";
 
-const TaggedPage = () => {
-	const { redirectIfNotLogged } = useAuth();
-	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
-
+export default function TaggedPage() {
 	const {
 		query: { postTags },
 	} = useRouter();
@@ -30,9 +25,19 @@ const TaggedPage = () => {
 			</MainContainer>
 		</>
 	);
-};
+}
 
-export default TaggedPage;
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (!cookies.auth) {
+		res.writeHead(302, { Location: "/" });
+		res.end();
+	}
+
+	return { props: {} };
+}
 
 const MainContainer = styled.main`
 	padding: 1rem 0;

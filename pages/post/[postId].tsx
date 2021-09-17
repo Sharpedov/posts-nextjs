@@ -1,18 +1,17 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import PostDetails from "src/components/post/postDetails";
 import styled from "styled-components";
 import Head from "next/head";
 import useSWR from "swr";
 import { fetcher } from "src/utils/fetcher";
-import { useAuth } from "src/components/authProvider";
 import { CardActionArea } from "@material-ui/core";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import cookie from "cookie";
 
-const PostPage = () => {
-	const { redirectIfNotLogged } = useAuth();
+export default function PostPage() {
 	const {
 		query: { postId },
 	} = useRouter();
@@ -30,10 +29,6 @@ const PostPage = () => {
 		if (!recommendedPosts || !postData) return;
 		return recommendedPosts.filter((post) => post._id !== postData._id);
 	}, [postData, recommendedPosts]);
-
-	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
 
 	if (postError) {
 		push("/404");
@@ -97,9 +92,19 @@ const PostPage = () => {
 			</MainContainer>
 		</>
 	);
-};
+}
 
-export default PostPage;
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (!cookies.auth) {
+		res.writeHead(302, { Location: "/" });
+		res.end();
+	}
+
+	return { props: {} };
+}
 
 const MainContainer = styled.main`
 	min-height: 80vh;

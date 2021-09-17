@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ProfileTemplate from "src/templates/profile";
 import ProfilePosts from "src/templates/profile/profilePosts";
-import { useAuth } from "src/components/authProvider";
+import cookie from "cookie";
 
-const UserProfilePage = () => {
-	const { redirectIfNotLogged } = useAuth();
+export default function ProfilePostsPage() {
 	const { query } = useRouter();
-	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
 
 	return (
 		<>
@@ -26,6 +22,16 @@ const UserProfilePage = () => {
 			</ProfileTemplate>
 		</>
 	);
-};
+}
 
-export default UserProfilePage;
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (!cookies.auth) {
+		res.writeHead(302, { Location: "/" });
+		res.end();
+	}
+
+	return { props: {} };
+}

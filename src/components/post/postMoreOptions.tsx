@@ -59,7 +59,7 @@ const PostMoreOptions = ({ isOpen, onClose, postId, postCreator }: IProps) => {
 			switch (option.action) {
 				case "copyLink": {
 					return navigator.clipboard.writeText(
-						`${process.env.HOST}/post/${postId}`
+						`${process.env.NEXT_PUBLIC_HOST}/post/${postId}`
 					);
 				}
 				case "edit": {

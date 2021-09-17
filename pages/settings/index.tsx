@@ -1,15 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import SettingsTemplate from "src/templates/profile/settings";
 import ProfileSettings from "src/templates/profile/settings/profileSettings";
-import { useAuth } from "src/components/authProvider";
+import cookie from "cookie";
 
-const HomePage = () => {
-	const { redirectIfNotLogged } = useAuth();
-	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
-
+export default function AccountProfilePage() {
 	return (
 		<>
 			<Head>
@@ -21,6 +16,16 @@ const HomePage = () => {
 			</SettingsTemplate>
 		</>
 	);
-};
+}
 
-export default HomePage;
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (!cookies.auth) {
+		res.writeHead(302, { Location: "/" });
+		res.end();
+	}
+
+	return { props: {} };
+}

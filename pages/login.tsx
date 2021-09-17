@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
 import Head from "next/head";
-import { useAuth } from "src/components/authProvider";
 import LoginForm from "src/components/form/loginForm";
+import cookie from "cookie";
 
 const backgroundData = [
 	"/images/home_background_1.jfif",
@@ -13,13 +13,7 @@ const backgroundData = [
 	"/images/home_background_5.jpg",
 ];
 
-export default function Default() {
-	const { redirectIfLogged } = useAuth();
-
-	useEffect(() => {
-		redirectIfLogged();
-	}, [redirectIfLogged]);
-
+export default function LoginPage() {
 	const randomBackground = useMemo(
 		() => Math.floor(Math.random() * backgroundData.length),
 		[]
@@ -38,6 +32,18 @@ export default function Default() {
 			</Container>
 		</>
 	);
+}
+
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (cookies.auth) {
+		res.writeHead(302, { Location: "/home" });
+		res.end();
+	}
+
+	return { props: {} };
 }
 
 const appearAnimation = keyframes`

@@ -1,15 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import CustomButton from "src/components/customButton";
-import { useAuth } from "src/components/authProvider";
+import cookie from "cookie";
 
-const HomePage = () => {
-	const { redirectIfNotLogged } = useAuth();
-	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
-
+export default function HomePage() {
 	return (
 		<>
 			<Head>
@@ -58,9 +53,19 @@ const HomePage = () => {
 			</MainContainer>
 		</>
 	);
-};
+}
 
-export default HomePage;
+export async function getServerSideProps(context) {
+	const { req, res } = context;
+	const cookies = cookie.parse(req.headers.cookie || "");
+
+	if (!cookies.auth) {
+		res.writeHead(302, { Location: "/" });
+		res.end();
+	}
+
+	return { props: {} };
+}
 
 const MainContainer = styled.main`
 	padding: 1rem 1.5rem;
