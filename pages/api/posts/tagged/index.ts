@@ -21,6 +21,10 @@ export default async function handler(req, res) {
 		case "GET":
 			{
 				try {
+					var tagsRegexp = tags
+						.split(",")
+						.map((tag) => new RegExp("^" + tag + "$", "i"));
+
 					const page = parseInt(req.query.page as string);
 					const limit = parseInt(req.query.limit as string);
 
@@ -28,7 +32,7 @@ export default async function handler(req, res) {
 
 					const postMessages = await PostMessage.find({
 						tags: {
-							$in: tags.split(","),
+							$in: tagsRegexp,
 						},
 					})
 						.sort(sort ?? "-createdAt")

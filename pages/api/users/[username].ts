@@ -10,11 +10,9 @@ export default async function handler(req, res) {
 		case "GET":
 			{
 				try {
-					const RegExpUsername = new RegExp(username, "i");
-
-					const user = await User.findOne({ username: RegExpUsername }).select(
-						"username avatar banner description"
-					);
+					const user = await User.findOne({
+						username: new RegExp("^" + username + "$", "i"),
+					}).select("username avatar banner description");
 
 					if (!user) return res.status(404).send("User not exists");
 
