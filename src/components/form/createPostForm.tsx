@@ -169,8 +169,8 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 			<div>{postError}</div>
 		</div>
 	) : (
-		<FormProvider {...methods}>
-			<AnimateSharedLayout>
+		<AnimateSharedLayout>
+			<FormProvider {...methods}>
 				<FocusTrap>
 					<Form
 						layout
@@ -250,7 +250,7 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 								<ErrorMessage layout>{errors.message.message}</ErrorMessage>
 							)}
 
-							<TagsRow layout>
+							<TagsRow>
 								<TagsInput
 									tags={tags ?? []}
 									setTags={setTags}
@@ -305,8 +305,8 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 						</ActionsRow>
 					</Form>
 				</FocusTrap>
-			</AnimateSharedLayout>
-		</FormProvider>
+			</FormProvider>
+		</AnimateSharedLayout>
 	);
 };
 
@@ -440,7 +440,6 @@ const TagsRow = styled(motion.div)`
 	width: 100%;
 	padding: 1rem;
 	background: rgba(255, 255, 255, 0.04);
-	padding: 1rem;
 	min-height: 50px;
 	border-radius: 3px;
 	transition: background 0.15s ease;
