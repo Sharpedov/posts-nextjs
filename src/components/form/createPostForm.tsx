@@ -193,7 +193,7 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 						/>
 						<CustomButton
 							size="small"
-							type="submit"
+							onClick={handleSubmit(onSubmit)}
 							disabled={!selectedImage || tags.length === 0}
 							loading={createLoading || editLoading || uploadPostUrlLoading}
 						>
