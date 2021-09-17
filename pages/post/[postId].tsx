@@ -10,6 +10,8 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "src/components/authProvider";
+import { Skeleton } from "@material-ui/lab";
+import Image from "next/image";
 
 export default function PostPage() {
 	const { redirectIfNotLogged } = useAuth();
@@ -57,42 +59,53 @@ export default function PostPage() {
 						initialData={{ data: postData, error: postError }}
 						isInModal={false}
 					/>
-					{!recommendedPosts ? null : recommendedError ? (
-						<div>{recommendedError.message}</div>
-					) : (
-						<RecommendedPostsContainer
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-						>
-							{filterRecommendedPosts.length === 0 ? (
-								<span>There are no recommended posts for these tags</span>
-							) : (
-								<>
-									<span>Recommended posts for this tags</span>
-									<RecommendedPostsList>
-										{filterRecommendedPosts.map((post) => (
-											<Link key={post._id} passHref href={`/post/${post._id}`}>
-												<RecommendedPostCard>
-													<PostCardImage
-														src={post.image}
-														alt={`${post.creator}'s post`}
-														draggable="false"
-														loading="lazy"
-													/>
-													<PostCardOverlay>
-														<PostLikesCount>
-															<ThumbUpIcon className="profileOverviewPostCardOverlay__icon" />
-															<span>{post.likes.length}</span>
-														</PostLikesCount>
-													</PostCardOverlay>
-												</RecommendedPostCard>
-											</Link>
-										))}
-									</RecommendedPostsList>
-								</>
-							)}
-						</RecommendedPostsContainer>
-					)}
+					<RecommendedPostsContainer>
+						{filterRecommendedPosts?.length === 0 ? (
+							<span>There are no recommended posts for these tags</span>
+						) : (
+							<span>Recommended posts for this tags</span>
+						)}
+
+						{!recommendedPosts ? (
+							<RecommendedPostsList>
+								{[1, 2, 3, 4, 5, 6].map((_, i) => (
+									<PostCardSkeleton
+										variant="rect"
+										animation="wave"
+										key={`postCardSkeletonProfile-${i}`}
+									/>
+								))}
+							</RecommendedPostsList>
+						) : recommendedError ? (
+							<div>{recommendedError.message}</div>
+						) : (
+							<RecommendedPostsList>
+								{filterRecommendedPosts.map((post) => (
+									<Link key={post._id} passHref href={`/post/${post._id}`}>
+										<RecommendedPostCard
+											component={motion.div}
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+										>
+											<Image
+												layout="fill"
+												src={post.image}
+												alt={`${post.creator}'s post`}
+												objectFit="cover"
+												draggable="false"
+											/>
+											<PostCardOverlay>
+												<PostLikesCount>
+													<ThumbUpIcon className="profileOverviewPostCardOverlay__icon" />
+													<span>{post.likes.length}</span>
+												</PostLikesCount>
+											</PostCardOverlay>
+										</RecommendedPostCard>
+									</Link>
+								))}
+							</RecommendedPostsList>
+						)}
+					</RecommendedPostsContainer>
 				</Wrapper>
 			</MainContainer>
 		</>
@@ -123,7 +136,7 @@ const Wrapper = styled.div`
 	}
 `;
 
-const RecommendedPostsContainer = styled(motion.div)`
+const RecommendedPostsContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin-top: 25px;
@@ -166,15 +179,6 @@ const RecommendedPostCard = styled(CardActionArea)`
 	}
 `;
 
-const PostCardImage = styled.img`
-	position: absolute;
-	inset: 0;
-	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-`;
-
 const PostCardOverlay = styled.div`
 	display: none;
 
@@ -215,4 +219,9 @@ const PostLikesCount = styled.div`
 		display: inline-block;
 		font-size: 1.9rem;
 	}
+`;
+
+const PostCardSkeleton = styled(Skeleton)`
+	padding-top: 100%;
+	background: ${({ theme }) => theme.colors.skeleton.primary};
 `;
