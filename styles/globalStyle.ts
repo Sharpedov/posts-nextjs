@@ -51,7 +51,7 @@ const GlobalStyle = createGlobalStyle`
      width: 100%;
 }
 .my-masonry-grid_column {
-  padding-left: 15px; /* gutter size */
+  padding-left: 15px;
   background-clip: padding-box;
 
   :first-of-type{
@@ -59,10 +59,8 @@ const GlobalStyle = createGlobalStyle`
   }
 }
 
-/* Style your items */
-.my-masonry-grid_column > li { /* change div to reference your elements you put in <Masonry> */
+.my-masonry-grid_column > div {
   margin-bottom: 15px;
-
 }
 `;
 

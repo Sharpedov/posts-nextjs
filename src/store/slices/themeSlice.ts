@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface IAddNotificationPayload {
+interface ISetThemePayload {
 	payload: {
 		theme: "darkGray" | "dark" | "navyBlue";
 	};
@@ -26,7 +26,7 @@ const themeSlice = createSlice({
 	name: "theme",
 	initialState,
 	reducers: {
-		setTheme: (state, action: IAddNotificationPayload) => {
+		setTheme: (state, action: ISetThemePayload) => {
 			localStorage.setItem("theme", JSON.stringify(action.payload.theme));
 			state.theme = action.payload.theme;
 		},

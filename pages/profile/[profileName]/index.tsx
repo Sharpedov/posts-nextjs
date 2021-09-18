@@ -21,6 +21,11 @@ export default function ProfilePage() {
 						? `${query.profileName}'s profile • Posts`
 						: "Username • Posts"}
 				</title>
+				<meta name="og:title" content={`${query.profileName}`} />
+				<meta
+					name="description"
+					content={`${query.profileName}'s Posts user profile'`}
+				/>
 			</Head>
 			<ProfileTemplate profileName={query.profileName}>
 				<ProfileOverview />

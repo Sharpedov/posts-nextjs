@@ -74,8 +74,9 @@ const UploadAvatarRowContent = ({ setProgress }: IProps) => {
 						Upload image
 					</CustomButton>
 				</UploadButtonWrapper>
-				<ProfileAvatarWrapper disabled={!uploadAvatarUrl}>
+				<ProfileAvatarWrapper className={!uploadAvatarUrl && "disabled"}>
 					<ProfileAvatar
+						alt="Profile avatar"
 						src={uploadAvatarUrl ?? user?.avatar}
 						onClick={() => uploadAvatarUrl && dispatch(resetUploadAvatar())}
 					/>
@@ -154,9 +155,13 @@ const Dropbox = styled(ButtonBase)`
 	}
 `;
 
-const ProfileAvatarWrapper = styled(ButtonBase)`
+const ProfileAvatarWrapper = styled.div`
 	position: relative;
 	overflow: hidden;
+
+	&.disabled {
+		pointer-events: none;
+	}
 
 	> span {
 		color: #000;

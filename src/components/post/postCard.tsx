@@ -129,7 +129,7 @@ const PostCard = React.forwardRef(
 								<Image
 									layout="fill"
 									src={image}
-									alt={title}
+									alt={`${creator} post image`}
 									draggable="false"
 									objectFit="cover"
 								/>
@@ -141,13 +141,14 @@ const PostCard = React.forwardRef(
 						{tags.length >= 1 && (
 							<TagsRow>
 								{tags.map((tag, i) => (
-									<Link passHref href={`/tagged/${tag}`} key={`${tag}-${i}`}>
-										<a>
-											<Tag
-												className={isTagActive(tag) && "active"}
-											>{`#${tag}`}</Tag>
-										</a>
-									</Link>
+									<Tag
+										key={`${tag}-${i}`}
+										className={isTagActive(tag) && "active"}
+									>
+										<Link passHref href={`/tagged/${tag}`}>
+											<a>{`#${tag}`}</a>
+										</Link>
+									</Tag>
 								))}
 							</TagsRow>
 						)}
@@ -205,7 +206,7 @@ const postAppear = keyframes`
     }
 `;
 
-const PostItem = styled(motion.li)`
+const PostItem = styled(motion.div)`
 	position: relative;
 	display: flex;
 	flex-direction: column;

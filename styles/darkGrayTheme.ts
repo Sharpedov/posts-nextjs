@@ -14,7 +14,7 @@ export const darkGrayTheme = {
 		},
 		button: {
 			primary: "#00B8FF",
-			secondary: "#ff9100",
+			secondary: "#CD7B22",
 			white: "#fafafa",
 			red: "rgb(232,93,117)",
 		},

@@ -51,6 +51,7 @@ export default function PostPage() {
 						? `${postData.creator} post • Posts`
 						: "Username post • Posts"}
 				</title>
+				<meta name="description" content="Post" />
 			</Head>
 			<MainContainer>
 				<Wrapper>

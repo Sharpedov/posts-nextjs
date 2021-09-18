@@ -16,6 +16,7 @@ interface IProps {
 	active?: boolean;
 	disabled?: boolean;
 	disableFocus?: boolean;
+	component?;
 }
 
 const CustomIconButton = ({
@@ -31,6 +32,7 @@ const CustomIconButton = ({
 	disabled,
 	disableFocus,
 	color,
+	component,
 }: IProps) => {
 	const StyledIconButtonElement = useMemo(
 		() => (
@@ -44,6 +46,7 @@ const CustomIconButton = ({
 				active={active ? 1 : 0}
 				disabled={disabled}
 				color={color}
+				component={component}
 			>
 				<Icon className="customIconButton__icon" />
 			</StyledIconButton>
@@ -59,6 +62,7 @@ const CustomIconButton = ({
 			disabled,
 			disableFocus,
 			color,
+			component,
 		]
 	);
 

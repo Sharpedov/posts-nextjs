@@ -15,6 +15,10 @@ export default function HomePage() {
 		<>
 			<Head>
 				<title>Home • Posts</title>
+				<meta
+					name="description"
+					content="Discover and enjoy the magic of the Posts"
+				/>
 			</Head>
 			<MainContainer>
 				<Wrapper>

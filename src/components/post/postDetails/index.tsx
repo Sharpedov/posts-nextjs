@@ -110,7 +110,7 @@ const PostDetails = ({
 							<ImageWrapper>
 								<ImagePost
 									src={postData.image}
-									alt={postData.title}
+									alt={`${postData.creator} post`}
 									draggable="false"
 									objectFit="cover"
 								/>
@@ -119,11 +119,11 @@ const PostDetails = ({
 						{postData.tags.length >= 1 && (
 							<TagsRow>
 								{postData.tags.map((tag, i) => (
-									<Link passHref href={`/tagged/${tag}`} key={`${tag}-${i}`}>
-										<a>
-											<Tag>{`#${tag}`}</Tag>
-										</a>
-									</Link>
+									<Tag key={`${tag}-${i}`}>
+										<Link passHref href={`/tagged/${tag}`}>
+											<a>{`#${tag}`}</a>
+										</Link>
+									</Tag>
 								))}
 							</TagsRow>
 						)}

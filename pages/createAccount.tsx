@@ -23,6 +23,7 @@ export default function CreateAccount() {
 		<>
 			<Head>
 				<title>Create Account • Posts</title>
+				<meta name="description" content="Create account on Posts" />
 			</Head>
 			<Container>
 				<Background bg={backgroundData[randomBackground]} />

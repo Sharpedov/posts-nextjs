@@ -25,6 +25,10 @@ export default function DefaultPage() {
 		<>
 			<Head>
 				<title>Posts</title>
+				<meta
+					name="description"
+					content="Posts is a place to discover and publish the stuff you love"
+				/>
 			</Head>
 			<Container>
 				<ScrollToList>
@@ -71,11 +75,11 @@ export default function DefaultPage() {
 							/>
 						</RowColumn1>
 						<RowColumn2>
-							<h2>ASDasdasd asd asd asd as</h2>
+							<h2>Lorem ipsum dolor sit amet</h2>
 							<p>
-								Serwery Discorda zorganizowane są w kanały tematyczne, na
-								których można współpracować, udostępniać materiały lub po prostu
-								pogadać bez zapychania czatu grupowego.
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+								aliquam neque interdum erat tempus laoreet. Praesent magna nunc,
+								feugiat id dapibus id, ultricies eu dui.
 							</p>
 						</RowColumn2>
 					</RowWrapper>
@@ -86,11 +90,10 @@ export default function DefaultPage() {
 							<Image src="/rwd.svg" layout="fill" alt="s" draggable="false" />
 						</RowColumn1>
 						<RowColumn2>
-							<h2>ASDasdasd asd asd asd as</h2>
+							<h2>Lorem ipsum dolor sit amet</h2>
 							<p>
-								Serwery Discorda zorganizowane są w kanały tematyczne, na
-								których można współpracować, udostępniać materiały lub po prostu
-								pogadać bez zapychania czatu grupowego.
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+								aliquam neque interdum erat tempus laoreet.
 							</p>
 						</RowColumn2>
 					</RowWrapper>
@@ -130,7 +133,7 @@ const Container = styled.div`
 	}
 `;
 
-const ScrollToList = styled.ul`
+const ScrollToList = styled.div`
 	display: none;
 
 	@media ${({ theme }) => theme.breakpoints.sm} {
@@ -283,12 +286,12 @@ const RowColumn2 = styled.div`
 	> h2 {
 		font-weight: 700;
 		line-height: 120%;
-		font-size: clamp(2rem, 3vw, 3.8rem);
+		font-size: clamp(2rem, 3vw, 3.6rem);
 	}
 
 	> p {
 		margin-top: 24px;
-		font-size: clamp(1.5rem, 1.8vw, 2rem);
+		font-size: clamp(1.5rem, 1.8vw, 1.9rem);
 		line-height: 1.625;
 		font-weight: 300;
 		opacity: 0.9;

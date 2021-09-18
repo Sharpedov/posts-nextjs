@@ -23,6 +23,7 @@ export default function LoginPage() {
 		<>
 			<Head>
 				<title>Login • Posts</title>
+				<meta name="description" content="Login to Posts" />
 			</Head>
 			<Container>
 				<Background bg={backgroundData[randomBackground]} />

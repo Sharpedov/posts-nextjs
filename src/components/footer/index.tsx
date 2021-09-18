@@ -15,13 +15,20 @@ const Footer = ({}: IProps) => {
 						<span>SOCIAL</span>
 						<SocialList>
 							{socialData.map((social, i) => (
-								<Link key={`${social.title}-${i}`} passHref href={social.href}>
-									<a target="_blank" rel="noopener noreferrer">
-										<SocialItem aria-label={social.title}>
+								<SocialItem
+									aria-label={social.title}
+									key={`${social.title}-${i}`}
+								>
+									<Link passHref href={social.href}>
+										<a
+											target="_blank"
+											rel="noopener noreferrer"
+											aria-label={social.title}
+										>
 											<social.icon className="footerSocialItem__icon" />
-										</SocialItem>
-									</a>
-								</Link>
+										</a>
+									</Link>
+								</SocialItem>
 							))}
 						</SocialList>
 					</SocialContainer>
@@ -85,10 +92,16 @@ const SocialItem = styled.li`
 	display: flex;
 	background: rgba(255, 255, 255, 0.3);
 	border-radius: 1px;
-	padding: 0.5rem;
 	cursor: pointer;
 	opacity: 1;
 	transition: opacity 0.25s, transform 0.25s;
+
+	> a {
+		padding: 0.5rem;
+		display: flex;
+		flex-grow: 1;
+		flex-basis: 100%;
+	}
 
 	&:hover {
 		opacity: 0.65;

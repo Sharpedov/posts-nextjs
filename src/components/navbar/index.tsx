@@ -153,6 +153,7 @@ const Navbar = ({}: IProps) => {
 							{linksListData.desktop.map((link, i) => (
 								<CustomIconButton
 									key={`${i}-${link.title}`}
+									component="li"
 									ariaLabel={link.title}
 									href={
 										link.href === "/profile"
@@ -164,7 +165,10 @@ const Navbar = ({}: IProps) => {
 								/>
 							))}
 						</LinksList>
-						<CreatePostButton onClick={() => setCreatePostIsOpen(true)}>
+						<CreatePostButton
+							onClick={() => setCreatePostIsOpen(true)}
+							aria-label="Create post"
+						>
 							<CreateIcon className="navbarCreatePost__icon" />
 						</CreatePostButton>
 

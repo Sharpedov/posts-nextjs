@@ -124,7 +124,7 @@ export const updateAccount = createAsyncThunk(
 			onComplete && onComplete();
 
 			dispatch(getLoggedUser());
-			dispatch(addNotification({ message: "User has been edited" }));
+			dispatch(addNotification({ message: "User has been updated" }));
 
 			return null;
 		} catch (error) {
@@ -155,7 +155,7 @@ export const updateProfile = createAsyncThunk(
 
 			onComplete && onComplete();
 
-			dispatch(addNotification({ message: "Successfully updated" }));
+			dispatch(addNotification({ message: "User has been updated" }));
 			dispatch(getLoggedUser());
 
 			return null;
