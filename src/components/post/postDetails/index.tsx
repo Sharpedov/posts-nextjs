@@ -14,6 +14,7 @@ import PostMoreOptions from "../postMoreOptions";
 import moment from "moment";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface IProps {
 	postId;
@@ -50,12 +51,12 @@ const PostDetails = ({
 			{postData?.error ? (
 				<div>{postData.error.message}</div>
 			) : !postData ? (
-				<ScaleLoading center marginTop={30} marginBottom={!isInModal && 600} />
+				<ScaleLoading center marginTop={30} marginBottom={!isInModal && 700} />
 			) : (
 				<Container
 					isInModal={isInModal}
 					initial={{ opacity: 0 }}
-					animate={{ opacity: 1, transition: { duration: 0.1 } }}
+					animate={{ opacity: 1, transition: { duration: 0.2 } }}
 				>
 					<Row1>
 						<UserAvatarContainer>
@@ -166,7 +167,8 @@ export default PostDetails;
 const Container = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
-	max-width: 815px;
+	max-width: 650px;
+	width: 100%;
 	margin: ${({ isInModal }) => (isInModal ? "30px auto" : "0 auto")};
 	background: ${({ theme }) => theme.colors.background.secondary};
 	border-radius: 3px;
@@ -233,14 +235,8 @@ const ImageContainer = styled.div`
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	min-width: 250px;
-	max-width: 650px;
+	max-height: 650px;
 	min-height: 250px;
-	max-height: 675px;
-
-	@media ${({ theme }) => theme.breakpoints.md} {
-		min-height: 450px;
-	}
 `;
 
 const ImagePost = styled.img`
@@ -248,11 +244,7 @@ const ImagePost = styled.img`
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	max-height: 575px;
-
-	@media ${({ theme }) => theme.breakpoints.md} {
-		max-height: 675px;
-	}
+	max-height: 650px;
 `;
 
 const TagsRow = styled.ul`

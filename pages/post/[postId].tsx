@@ -60,13 +60,10 @@ export default function PostPage() {
 						initialData={{ data: postData, error: postError }}
 						isInModal={false}
 					/>
-					<RecommendedPostsContainer>
-						{filterRecommendedPosts?.length === 0 ? (
-							<span>There are no recommended posts for these tags</span>
-						) : (
-							<span>Recommended posts for this tags</span>
-						)}
-
+					<RecommendedPostsContainer
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+					>
 						{!recommendedPosts && !postData ? (
 							<RecommendedPostsList>
 								{[1, 2, 3, 4, 5, 6].map((_, i) => (
@@ -80,31 +77,38 @@ export default function PostPage() {
 						) : recommendedError ? (
 							<div>{recommendedError.message}</div>
 						) : (
-							<RecommendedPostsList>
-								{filterRecommendedPosts?.map((post) => (
-									<Link key={post._id} passHref href={`/post/${post._id}`}>
-										<RecommendedPostCard
-											component={motion.div}
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-										>
-											<Image
-												layout="fill"
-												src={post.image}
-												alt={`${post.creator}'s post`}
-												objectFit="cover"
-												draggable="false"
-											/>
-											<PostCardOverlay>
-												<PostLikesCount>
-													<ThumbUpIcon className="profileOverviewPostCardOverlay__icon" />
-													<span>{post.likes.length}</span>
-												</PostLikesCount>
-											</PostCardOverlay>
-										</RecommendedPostCard>
-									</Link>
-								))}
-							</RecommendedPostsList>
+							<>
+								{filterRecommendedPosts?.length === 0 ? (
+									<span>There are no recommended posts for these tags</span>
+								) : (
+									<span>Recommended posts for this tags</span>
+								)}
+								<RecommendedPostsList>
+									{filterRecommendedPosts?.map((post) => (
+										<Link key={post._id} passHref href={`/post/${post._id}`}>
+											<RecommendedPostCard
+												component={motion.div}
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+											>
+												<Image
+													layout="fill"
+													src={post.image}
+													alt={`${post.creator}'s post`}
+													objectFit="cover"
+													draggable="false"
+												/>
+												<PostCardOverlay>
+													<PostLikesCount>
+														<ThumbUpIcon className="profileOverviewPostCardOverlay__icon" />
+														<span>{post.likes.length}</span>
+													</PostLikesCount>
+												</PostCardOverlay>
+											</RecommendedPostCard>
+										</Link>
+									))}
+								</RecommendedPostsList>
+							</>
 						)}
 					</RecommendedPostsContainer>
 				</Wrapper>
@@ -138,7 +142,7 @@ const Wrapper = styled.div`
 	}
 `;
 
-const RecommendedPostsContainer = styled.div`
+const RecommendedPostsContainer = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	margin-top: 25px;
