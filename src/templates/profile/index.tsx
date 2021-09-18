@@ -19,7 +19,7 @@ const profileNavData = [
 ];
 
 const ProfileTemplate = ({ profileName, children }: IProps) => {
-	const { asPath, push } = useRouter();
+	const { pathname, push } = useRouter();
 	const { user, loading } = useAuth();
 
 	const { data: dataProfile, error: errorProfile } = useSWR(
@@ -89,7 +89,7 @@ const ProfileTemplate = ({ profileName, children }: IProps) => {
 						>
 							<NavLink
 								className={
-									asPath === `/profile/${profileName}${el.href}` && "active"
+									pathname === `/profile/[profileName]${el.href}` && "active"
 								}
 							>
 								{el.title}

@@ -56,7 +56,7 @@ export default function DefaultPage() {
 						animate={{ opacity: 1, transition: { duration: 0.1 } }}
 					>
 						<Logo>Posts</Logo>
-						<Text>Create, admire, chat and find related souls.</Text>
+						<Text>Create, admire and enjoy.</Text>
 						<Buttons>
 							<CustomButton href="/login">Sign in</CustomButton>
 							<CustomButton href="/createAccount" color="secondary">
