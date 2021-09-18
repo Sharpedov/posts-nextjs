@@ -272,6 +272,7 @@ const MessageRow = styled.div`
 const TagsRow = styled.ul`
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	margin: 10px 0;
 	gap: 8px;
 	word-break: break-word;
@@ -286,8 +287,8 @@ const Tag = styled.li`
 
 	&.active {
 		background: ${({ theme }) => theme.colors.button.primary};
-		padding: 4px 6px;
 		border-radius: 20px;
+		padding: 3px 6px;
 		opacity: 1;
 	}
 
