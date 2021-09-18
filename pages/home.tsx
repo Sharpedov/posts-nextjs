@@ -3,6 +3,7 @@ import Head from "next/head";
 import styled from "styled-components";
 import Posts from "src/components/posts";
 import { useAuth } from "src/components/authProvider";
+import Footer from "src/components/footer";
 
 export default function HomePage() {
 	const { redirectIfNotLogged } = useAuth();
@@ -25,6 +26,7 @@ export default function HomePage() {
 					<Posts queryKeyWithLimit="/api/posts?limit=12" />
 				</Wrapper>
 			</MainContainer>
+			<Footer />
 		</>
 	);
 }

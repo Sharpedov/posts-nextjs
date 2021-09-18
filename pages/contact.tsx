@@ -3,6 +3,7 @@ import Head from "next/head";
 import styled from "styled-components";
 import CustomButton from "src/components/customButton";
 import { useAuth } from "src/components/authProvider";
+import Footer from "src/components/footer";
 
 export default function HomePage() {
 	const { redirectIfNotLogged } = useAuth();
@@ -56,13 +57,14 @@ export default function HomePage() {
 					</Content>
 				</Wrapper>
 			</MainContainer>
+			<Footer />
 		</>
 	);
 }
 
 const MainContainer = styled.main`
 	padding: 1rem 1.5rem;
-	min-height: 100vh;
+	min-height: 85vh;
 
 	@media ${({ theme }) => theme.breakpoints.md} {
 		padding: 1rem;

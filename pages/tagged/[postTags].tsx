@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import Posts from "src/components/posts";
 import { useAuth } from "src/components/authProvider";
+import Footer from "src/components/footer";
 
 export default function TaggedPage() {
 	const { redirectIfNotLogged } = useAuth();
@@ -28,6 +29,7 @@ export default function TaggedPage() {
 					/>
 				</Wrapper>
 			</MainContainer>
+			<Footer />
 		</>
 	);
 }

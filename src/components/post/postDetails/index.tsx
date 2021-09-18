@@ -55,7 +55,7 @@ const PostDetails = ({
 				<Container
 					isInModal={isInModal}
 					initial={{ opacity: 0 }}
-					animate={{ opacity: 1, transition: { duration: 0.2 } }}
+					animate={{ opacity: 1, transition: { duration: 0.1 } }}
 				>
 					<Row1>
 						<UserAvatarContainer>
@@ -107,14 +107,12 @@ const PostDetails = ({
 					<Row2>
 						<MessageRow>{postData.message}</MessageRow>
 						<ImageContainer>
-							<ImageWrapper>
-								<ImagePost
-									src={postData.image}
-									alt={`${postData.creator} post`}
-									draggable="false"
-									objectFit="cover"
-								/>
-							</ImageWrapper>
+							<ImagePost
+								src={postData.image}
+								alt={`${postData.creator} post`}
+								draggable="false"
+								objectFit="cover"
+							/>
 						</ImageContainer>
 						{postData.tags.length >= 1 && (
 							<TagsRow>
@@ -234,22 +232,14 @@ const ImageContainer = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #000;
 	width: 100%;
-	min-height: 225px;
+	min-width: 250px;
+	max-width: 650px;
+	min-height: 250px;
 	max-height: 675px;
 
 	@media ${({ theme }) => theme.breakpoints.md} {
 		min-height: 450px;
-	}
-`;
-
-const ImageWrapper = styled.div`
-	max-height: 575px;
-	width: 100%;
-
-	@media ${({ theme }) => theme.breakpoints.md} {
-		max-height: 675px;
 	}
 `;
 

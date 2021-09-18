@@ -3,6 +3,7 @@ import Head from "next/head";
 import SettingsTemplate from "src/templates/profile/settings";
 import AccountSettings from "src/templates/profile/settings/accountSettings";
 import { useAuth } from "src/components/authProvider";
+import Footer from "src/components/footer";
 
 export default function AccountSettingsPage() {
 	const { redirectIfNotLogged } = useAuth();
@@ -23,6 +24,7 @@ export default function AccountSettingsPage() {
 			<SettingsTemplate>
 				<AccountSettings />
 			</SettingsTemplate>
+			<Footer />
 		</>
 	);
 }

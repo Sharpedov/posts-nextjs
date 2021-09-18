@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import Head from "next/head";
 import CustomButton from "src/components/customButton";
@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Link as ScrollLink } from "react-scroll";
 import Image from "next/image";
 import cookie from "cookie";
+import Footer from "src/components/footer";
 
 const backgroundData = [
 	"/images/home_background_1.jfif",
@@ -99,6 +100,7 @@ export default function DefaultPage() {
 					</RowWrapper>
 				</RowContainer>
 			</Container>
+			<Footer />
 		</>
 	);
 }

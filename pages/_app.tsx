@@ -6,10 +6,14 @@ import GlobalLayout from "src/components/globalLayout";
 import AuthProvider from "src/components/authProvider";
 import NotificationsProvider from "src/components/notificationsProvider";
 import ThemeProvider from "src/components/themeProvider";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
 	return (
 		<>
+			<Head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+			</Head>
 			<ReduxProvider store={store}>
 				<AuthProvider>
 					<StylesProvider injectFirst>

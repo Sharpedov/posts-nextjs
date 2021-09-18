@@ -12,12 +12,14 @@ import { motion } from "framer-motion";
 import { useAuth } from "src/components/authProvider";
 import { Skeleton } from "@material-ui/lab";
 import Image from "next/image";
+import Footer from "src/components/footer";
 
 export default function PostPage() {
 	const { redirectIfNotLogged } = useAuth();
 	const {
 		query: { postId },
 	} = useRouter();
+	const { push } = useRouter();
 	const { data: postData, error: postError } = useSWR(
 		postId && `/api/posts/post/${postId}`,
 		fetcher
@@ -26,7 +28,6 @@ export default function PostPage() {
 		postData?.tags && `/api/posts/tagged?limit=6&tags=${postData.tags}`,
 		fetcher
 	);
-	const { push } = useRouter();
 
 	useEffect(() => {
 		redirectIfNotLogged();
@@ -39,7 +40,6 @@ export default function PostPage() {
 
 	if (postError) {
 		push("/404");
-
 		return null;
 	}
 
@@ -67,7 +67,7 @@ export default function PostPage() {
 							<span>Recommended posts for this tags</span>
 						)}
 
-						{!recommendedPosts ? (
+						{!recommendedPosts && !postData ? (
 							<RecommendedPostsList>
 								{[1, 2, 3, 4, 5, 6].map((_, i) => (
 									<PostCardSkeleton
@@ -81,7 +81,7 @@ export default function PostPage() {
 							<div>{recommendedError.message}</div>
 						) : (
 							<RecommendedPostsList>
-								{filterRecommendedPosts.map((post) => (
+								{filterRecommendedPosts?.map((post) => (
 									<Link key={post._id} passHref href={`/post/${post._id}`}>
 										<RecommendedPostCard
 											component={motion.div}
@@ -109,6 +109,7 @@ export default function PostPage() {
 					</RecommendedPostsContainer>
 				</Wrapper>
 			</MainContainer>
+			<Footer />
 		</>
 	);
 }

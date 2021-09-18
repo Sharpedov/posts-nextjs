@@ -10,7 +10,7 @@ export const config = {
 	},
 };
 
-export default authenticated(async function handler(req, res) {
+export default async function handler(req, res) {
 	const {
 		query: { id },
 		method,
@@ -68,4 +68,4 @@ export default authenticated(async function handler(req, res) {
 			res.status(400).send("Semthing went wrong");
 			break;
 	}
-});
+}

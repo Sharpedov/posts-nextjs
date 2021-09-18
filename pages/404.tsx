@@ -3,6 +3,7 @@ import Head from "next/head";
 import styled from "styled-components";
 import Image from "next/image";
 import CustomButton from "src/components/customButton";
+import Footer from "src/components/footer";
 
 export default function Http404() {
 	return (
@@ -17,6 +18,7 @@ export default function Http404() {
 					Go home
 				</CustomButton>
 			</Container>
+			<Footer />
 		</>
 	);
 }

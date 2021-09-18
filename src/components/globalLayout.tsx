@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Footer from "./footer";
 import Navbar from "./navbar";
 
 interface IProps {
@@ -12,7 +11,6 @@ const GlobalLayout = ({ children }: IProps) => {
 		<Layout>
 			<Navbar />
 			{children}
-			<Footer />
 		</Layout>
 	);
 };

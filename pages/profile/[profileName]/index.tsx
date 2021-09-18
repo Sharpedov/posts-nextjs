@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ProfileTemplate from "src/templates/profile";
 import ProfileOverview from "src/templates/profile/profileOverview";
 import { useAuth } from "src/components/authProvider";
+import Footer from "src/components/footer";
 
 export default function ProfilePage() {
 	const { query } = useRouter();
@@ -30,6 +31,7 @@ export default function ProfilePage() {
 			<ProfileTemplate profileName={query.profileName}>
 				<ProfileOverview />
 			</ProfileTemplate>
+			<Footer />
 		</>
 	);
 }
