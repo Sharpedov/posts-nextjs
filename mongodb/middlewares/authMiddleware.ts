@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const authMiddleware = (handler) => async (req, res) => {
 	const decoded = jwt.verify(
-		req.cookies.access!,
+		req.cookies.auth_access!,
 		process.env.AUTH_ACCESS_TOKEN_SECRET,
 		async function (err, decoded) {
 			if (!err && decoded) {
