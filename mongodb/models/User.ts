@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema(
 		banner: { type: String },
 		description: { type: String },
 		location: { type: String },
+		tokenVersion: { type: Number, default: 0 },
 	},
 	{
 		timestamps: true,
