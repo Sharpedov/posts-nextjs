@@ -1,8 +1,7 @@
 import { compare } from "bcryptjs";
 import dbConnect from "mongodb/dbConnect";
 import User from "mongodb/models/User";
-import { sign } from "jsonwebtoken";
-import cookie from "cookie";
+import { buildAuthTokens, setAuthTokens } from "mongodb/utils/authTokenUtils";
 
 export default async function handler(req, res) {
 	const { method, body } = req;
@@ -27,26 +26,10 @@ export default async function handler(req, res) {
 						message: "Invalid email or password",
 					});
 
-				const claims = {
-					_id: user._id,
-				};
+				const { accessToken, refreshToken } = buildAuthTokens(user);
+				setAuthTokens(res, accessToken, refreshToken);
 
-				const jwt = sign(claims, process.env.LOGIN_SECRET, {
-					expiresIn: "30d",
-				});
-
-				res.setHeader(
-					"Set-Cookie",
-					cookie.serialize("auth", jwt, {
-						httpOnly: true,
-						secure: process.env.NODE_ENV !== "development",
-						sameSite: "strict",
-						maxAge: 3600 * 24 * 30,
-						path: "/",
-					})
-				);
-
-				res.status(201).json({ success: true });
+				res.status(200).json({ success: true });
 			} catch (error) {
 				res.status(400).json({ success: false, message: error });
 			}
