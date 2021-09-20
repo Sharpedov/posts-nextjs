@@ -87,7 +87,7 @@ const ConfirmModal = ({
 						{authLoading ? (
 							<ScaleLoading center marginTop={30} />
 						) : (
-							<FocusTrap>
+							<FocusTrap focusTrapOptions={{ initialFocus: false }}>
 								<ContentContainer variants={contentVariants}>
 									{loading && <LinearLoading />}
 									{message ? (

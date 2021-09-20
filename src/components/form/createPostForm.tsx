@@ -169,7 +169,7 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 			<div>{postError}</div>
 		</div>
 	) : (
-		<FocusTrap>
+		<FocusTrap focusTrapOptions={{ initialFocus: false }}>
 			<AnimateSharedLayout>
 				<Container layout>
 					{(createLoading || editLoading || !!uploadProgress) && (
