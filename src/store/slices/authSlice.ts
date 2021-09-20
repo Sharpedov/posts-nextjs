@@ -1,8 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import router from "next/router";
+import {
+	authFetcher,
+	authPatcher,
+	authPoster,
+} from "src/utils/authAxiosMethods";
 import { addNotification } from "./notificationsSlice";
-import Cookies from "js-cookie";
 
 interface ICreateAccount {
 	username: string;
@@ -16,7 +20,7 @@ interface ILogin {
 }
 
 interface IUpdateAccount {
-	avatar;
+	avatar: string | undefined;
 	username: string;
 	newEmail: string;
 	password: string;
@@ -25,8 +29,8 @@ interface IUpdateAccount {
 }
 
 interface IUpdateProfile {
-	avatar;
-	banner;
+	avatar: string | undefined;
+	banner: string | undefined;
 	description: string;
 	onComplete?;
 }
@@ -35,24 +39,10 @@ export const getLoggedUser = createAsyncThunk(
 	"auth/getLoggedUser",
 	async () => {
 		try {
-			const { success, data } = await axios
-				.get("/api/auth/getLoggedUser")
-				.then((res) => res.data);
-
-			if (success === false) {
-				Cookies.set("isLogged", false);
-				return;
-			}
-
-			const user = await axios
-				.get(`/api/users?id=${data._id}`)
-				.then((res) => res.data.user);
-
-			Cookies.set("isLogged", true);
+			const user = await authFetcher("/api/auth/getLoggedUser");
 
 			return user;
 		} catch (error) {
-			Cookies.set("isLogged", false);
 			throw error.response.data.message;
 		}
 	}
@@ -82,15 +72,15 @@ export const login = createAsyncThunk(
 	"auth/login",
 	async ({ email, password }: ILogin, { dispatch }) => {
 		try {
-			const data = await axios
+			await axios
 				.post("/api/auth/login", { email, password })
 				.then((res) => res.data);
 
-			dispatch(getLoggedUser());
+			await dispatch(getLoggedUser());
 
 			router.push("/home");
 
-			return data.user;
+			return;
 		} catch (error) {
 			dispatch(
 				addNotification({ message: error.response.data.message, time: 4000 })
@@ -111,15 +101,13 @@ export const updateAccount = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			await axios
-				.patch(`/api/users/updateAccount`, {
-					username: user.username === username ? undefined : username,
-					email: user.email,
-					newEmail: user.email === newEmail ? undefined : newEmail,
-					password,
-					newPassword,
-				})
-				.then((res) => res.data);
+			await authPatcher(`/api/users/updateAccount`, {
+				username: user.username === username ? undefined : username,
+				email: user.email,
+				newEmail: user.email === newEmail ? undefined : newEmail,
+				password,
+				newPassword,
+			});
 
 			onComplete && onComplete();
 
@@ -144,14 +132,12 @@ export const updateProfile = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			await axios
-				.patch(`/api/users/updateProfile`, {
-					email: user.email,
-					avatar,
-					banner,
-					description,
-				})
-				.then((res) => res.data);
+			await authPatcher(`/api/users/updateProfile`, {
+				email: user.email,
+				avatar,
+				banner,
+				description,
+			});
 
 			onComplete && onComplete();
 
@@ -168,9 +154,8 @@ export const updateProfile = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async () => {
 	try {
-		await axios.post("/api/auth/logout");
-		Cookies.set("isLogged", false);
-		router.push("/");
+		await authPoster("/api/auth/logout");
+		router.replace("/");
 
 		return null;
 	} catch (error) {
@@ -224,8 +209,7 @@ const authSlice = createSlice({
 			state.login.loading = true;
 			state.login.error = null;
 		});
-		builder.addCase(login.fulfilled, (state, action) => {
-			state.user = action.payload;
+		builder.addCase(login.fulfilled, (state) => {
 			state.login.loading = false;
 		});
 		builder.addCase(login.rejected, (state, action) => {
