@@ -37,19 +37,6 @@ export default async function handler(req, res) {
 				}
 			}
 			break;
-		case "POST":
-			{
-				try {
-					const newPost = new PostMessage(req.body);
-
-					await newPost.save();
-
-					res.status(201).json(newPost);
-				} catch (err) {
-					res.status(409).json(err);
-				}
-			}
-			break;
 		default:
 			res.status(400).send("Semthing went wrong");
 			break;
