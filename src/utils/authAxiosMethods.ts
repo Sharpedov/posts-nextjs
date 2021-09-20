@@ -28,3 +28,32 @@ export const authFetcher = async <T>(
 
 	return data;
 };
+
+export const authPoster = async <T>(
+	url: string,
+	payload?: unknown
+): Promise<QueryResponse<T>> => {
+	const request = () => axios.post(url, payload, { withCredentials: true });
+	const { data } = await handleRequest(request);
+
+	return data;
+};
+
+export const authPatcher = async <T>(
+	url: string,
+	payload?: unknown
+): Promise<QueryResponse<T>> => {
+	const request = () => axios.patch(url, payload, { withCredentials: true });
+	const { data } = await handleRequest(request);
+
+	return data;
+};
+
+export const authDeleter = async <T>(
+	url: string
+): Promise<QueryResponse<T>> => {
+	const request = () => axios.delete(url, { withCredentials: true });
+	const { data } = await handleRequest(request);
+
+	return data;
+};
