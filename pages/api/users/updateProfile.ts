@@ -1,9 +1,9 @@
 import dbConnect from "mongodb/dbConnect";
+import { authMiddleware } from "mongodb/middlewares/authMiddleware";
 import PostMessage from "mongodb/models/PostMessage";
 import User from "mongodb/models/User";
-import { authenticated } from "../authenticated";
 
-export default authenticated(async function handler(req, res) {
+export default authMiddleware(async function handler(req, res) {
 	const { method, body } = req;
 	await dbConnect();
 

@@ -3,9 +3,9 @@ import User from "mongodb/models/User";
 import { compare } from "bcryptjs";
 import bcrypt from "bcryptjs";
 import PostMessage from "mongodb/models/PostMessage";
-import { authenticated } from "../authenticated";
+import { authMiddleware } from "mongodb/middlewares/authMiddleware";
 
-export default authenticated(async function handler(req, res) {
+export default authMiddleware(async function handler(req, res) {
 	const { method, body } = req;
 	await dbConnect();
 
