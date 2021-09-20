@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUser } from "src/store/slices/authSlice";
-import Cookies from "js-cookie";
 
 const AuthContext = createContext(null);
 
@@ -22,10 +21,11 @@ interface IProps {
 const mapState = (state) => ({
 	authUser: state.auth.user,
 	authLoading: state.auth.loading,
+	authError: state.auth.error,
 });
 
 const AuthProvider = ({ children }: IProps) => {
-	const { authUser, authLoading } = useSelector(mapState);
+	const { authUser, authLoading, authError } = useSelector(mapState);
 	const [user, setUser] = useState(authUser);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -44,14 +44,9 @@ const AuthProvider = ({ children }: IProps) => {
 
 	const redirectIfNotLogged = useCallback(
 		(redirectTo) => {
-			if (!!Cookies.get("isLogged")) {
-				return JSON.parse(Cookies.get("isLogged"))
-					? null
-					: router.push(redirectTo ?? "/");
-			}
-			router.push(redirectTo ?? "/");
+			!user && authError && !loading && router.push(redirectTo ?? "/");
 		},
-		[router]
+		[router, user, loading, authError]
 	);
 
 	const memoredValue = useMemo(
