@@ -37,9 +37,8 @@ export default function CreateAccount() {
 
 export async function getServerSideProps(context) {
 	const { req, res } = context;
-	const cookies = cookie.parse(req.headers.cookie || "");
 
-	if (cookies.auth) {
+	if (req.cookies.auth_refresh) {
 		res.writeHead(302, { Location: "/home" });
 		res.end();
 	}
