@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+	authDeleter,
+	authPatcher,
+	authPoster,
+} from "src/utils/authAxiosMethods";
 import { mutate } from "swr";
 import { addNotification } from "./notificationsSlice";
 
@@ -36,9 +41,7 @@ export const createPost = createAsyncThunk(
 			const {
 				posts: { mutatePosts },
 			} = getState() as any;
-			const data = await axios
-				.post("/api/posts", postData)
-				.then((res) => res.data);
+			const data = await authPoster("/api/posts/create", postData);
 
 			await mutatePosts();
 			onComplete && onComplete();
@@ -58,9 +61,10 @@ export const editPost = createAsyncThunk(
 			const {
 				posts: { mutatePosts },
 			} = getState() as any;
-			const data = await axios
-				.patch(`/api/posts/post/${id}`, { post: postData })
-				.then((res) => res.data);
+
+			const data = await authPatcher(`/api/posts/post/auth/${id}`, {
+				post: postData,
+			});
 
 			await mutatePosts();
 			await mutate(`/api/posts/post/${id}`);
@@ -87,9 +91,9 @@ export const likePost = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			const data = await axios
-				.patch(`/api/posts/post/like/${id}`, { userId: user._id })
-				.then((res) => res.data);
+			const data = await authPatcher(`/api/posts/post/like/${id}`, {
+				userId: user._id,
+			});
 
 			await mutatePosts();
 			await mutate(`/api/posts/post/${id}`);
@@ -114,9 +118,10 @@ export const dislikePost = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			const data = await axios
-				.patch(`/api/posts/post/dislike/${id}`, { userId: user._id })
-				.then((res) => res.data);
+			const data = await authPatcher(`/api/posts/post/dislike/${id}`, {
+				userId: user._id,
+			});
+
 			await mutatePosts();
 			await mutate(`/api/posts/post/${id}`);
 			onComplete && onComplete();
@@ -138,9 +143,8 @@ export const deletePost = createAsyncThunk(
 			const {
 				posts: { mutatePosts },
 			} = getState() as any;
-			const data = await axios
-				.delete(`/api/posts/post/${id}`)
-				.then((res) => res.data);
+
+			const data = await authDeleter(`/api/posts/post/auth/${id}`);
 
 			await mutatePosts();
 			await mutate(`/api/posts/post/${id}`);
@@ -221,7 +225,6 @@ const postsSlice = createSlice({
 		});
 		builder.addCase(createPost.fulfilled, (state, action) => {
 			state.create.loading = false;
-			// state.postsState.posts = [action.payload.data, ...state.postsState.posts];
 		});
 		builder.addCase(createPost.rejected, (state, action) => {
 			state.create.loading = false;
@@ -235,11 +238,6 @@ const postsSlice = createSlice({
 		});
 		builder.addCase(deletePost.fulfilled, (state, action) => {
 			state.delete.loading = false;
-			// state.postsState.posts = [
-			// 	...state.postsState.posts.filter(
-			// 		(post) => post._id !== action.payload.data
-			// 	),
-			// ];
 		});
 		builder.addCase(deletePost.rejected, (state, action) => {
 			state.delete.loading = false;
@@ -267,11 +265,6 @@ const postsSlice = createSlice({
 		});
 		builder.addCase(editPost.fulfilled, (state, action) => {
 			state.edit.loading = false;
-			// state.postsState.posts = [
-			// 	...state.postsState.posts.map((post) =>
-			// 		post._id === action.payload.data._id ? action.payload.data : post
-			// 	),
-			// ];
 		});
 		builder.addCase(editPost.rejected, (state, action) => {
 			state.edit.loading = false;
