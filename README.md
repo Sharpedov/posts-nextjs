@@ -5,7 +5,7 @@ In this app you can publish posts and view them, to be able to do it first you n
 ##### Lighthouse
 ![alt text](https://i.imgur.com/EGYOq0H.png)
 ##### Vercel Analytics
-![alt text](https://i.imgur.com/E3XjtSu.png)
+![alt text](https://i.imgur.com/HB8kcbD.png)
 
 ## Tech
 | Tech | Tech |
