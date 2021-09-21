@@ -106,6 +106,10 @@ const StyledIconButton = styled(IconButton)`
 			: "7px"};
 	transition: all 0.2s cubic-bezier(0.61, 1, 0.88, 1);
 
+	&:disabled {
+		opacity: 0.5;
+	}
+
 	.customIconButton__icon {
 		color: ${({ theme, active, color }) =>
 			active

@@ -33,14 +33,14 @@ const AuthProvider = ({ children }: IProps) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		setIsLogged(authUser ? true : false);
+		setIsLogged(authUser && !authLoading && !authError ? true : false);
 		setUser(authUser ?? null);
 		setLoading(authLoading);
-	}, [authUser, authLoading]);
+	}, [authUser, authLoading, authError]);
 
 	useEffect(() => {
-		dispatch(getLoggedUser());
-	}, [dispatch]);
+		!authUser && dispatch(getLoggedUser());
+	}, [dispatch, authUser]);
 
 	const redirectIfNotLogged = useCallback(
 		(redirectTo) => {

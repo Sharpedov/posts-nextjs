@@ -11,6 +11,7 @@ import Link from "next/link";
 import UserAvatar from "src/components/user/userAvatar";
 import PostDetails from "./postDetails";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { PostLikeHandler } from "src/utils/postLikeHandler";
@@ -156,7 +157,7 @@ const PostCard = React.forwardRef(
 					<Actions>
 						<ActionItem>
 							<CustomIconButton
-								Icon={ThumbUpAltOutlinedIcon}
+								Icon={isLiked ? ThumbUpIcon : ThumbUpAltOutlinedIcon}
 								ariaLabel={isLiked ? "Dislike post" : "Like post"}
 								size="small"
 								changeColorOnHover={true}

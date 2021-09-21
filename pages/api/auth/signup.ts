@@ -18,11 +18,11 @@ export default async function handler(req, res) {
 
 					if (existingUser)
 						return res
-							.status(401)
+							.status(404)
 							.json({ message: "We cannot create account. Try again." });
 
 					if (existingUsername)
-						return res.status(401).json({ message: "Username already exists" });
+						return res.status(404).json({ message: "Username already exists" });
 
 					await User.create({
 						username,

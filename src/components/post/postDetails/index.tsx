@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
 import { PostLikeHandler } from "src/utils/postLikeHandler";
 import CustomIconButton from "src/components/customIconButton";
 import UserAvatar from "src/components/user/userAvatar";
@@ -129,7 +130,7 @@ const PostDetails = ({
 						<Actions isInModal={isInModal}>
 							<ActionItem>
 								<CustomIconButton
-									Icon={ThumbUpAltOutlinedIcon}
+									Icon={isLiked ? ThumbUpIcon : ThumbUpAltOutlinedIcon}
 									ariaLabel="Like post"
 									size="small"
 									changeColorOnHover={true}
