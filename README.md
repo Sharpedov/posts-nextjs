@@ -1,9 +1,9 @@
 ## Project Overview 
-In this app you can publish posts and view them, to be able to do it first you need to be logged in.
+Page build with Next.js, you can publish here posts and view them, to be able to do this firstable you need to logged in.
 
 ## Performance
 ##### Lighthouse
-![alt text](https://i.imgur.com/EGYOq0H.png)
+![alt text](https://i.imgur.com/Q7cPFuL.png)
 ##### Vercel Analytics
 ![alt text](https://i.imgur.com/HB8kcbD.png)
 
