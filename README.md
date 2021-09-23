@@ -15,6 +15,7 @@ Page build with Next.js, you can publish here posts and view them, to be able to
 | [styled-components](https://styled-components.com/)| [material-ui](https://mui.com/) |
 | [MongoDB](https://www.mongodb.com/) | [Express.js](https://expressjs.com/) |
 | [react-hook-form](https://react-hook-form.com/) | [yup](https://github.com/jquense/yup) |
+| [SWR](https://swr.vercel.app/) ||
 
 ## Live
 https://posts-nextjs-lemon.vercel.app
