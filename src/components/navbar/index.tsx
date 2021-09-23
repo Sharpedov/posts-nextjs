@@ -148,45 +148,45 @@ const Navbar = ({}: IProps) => {
 						</SearchContainer>
 					</LeftSide>
 
-					{isLogged && (
-						<RightSide>
-							<LinksList>
-								{linksListData.desktop.map((link, i) => (
-									<CustomIconButton
-										key={`${i}-${link.title}`}
-										component="li"
-										ariaLabel={link.title}
-										href={
-											link.href === "/profile"
+					<RightSide>
+						<LinksList>
+							{linksListData.desktop.map((link, i) => (
+								<CustomIconButton
+									key={`${i}-${link.title}`}
+									component="li"
+									ariaLabel={link.title}
+									href={
+										link.href === "/profile"
+											? isLogged
 												? `${link.href}/${user?.username}`
-												: link.href
-										}
-										Icon={link.icon}
-										size="medium"
-									/>
-								))}
-							</LinksList>
-							<CreatePostButton
-								onClick={() => setCreatePostIsOpen(true)}
-								aria-label="Create post"
-							>
-								<CreateIcon className="navbarCreatePost__icon" />
-							</CreatePostButton>
+												: "/home"
+											: link.href
+									}
+									Icon={link.icon}
+									size="medium"
+								/>
+							))}
+						</LinksList>
+						<CreatePostButton
+							onClick={() => setCreatePostIsOpen(true)}
+							aria-label="Create post"
+						>
+							<CreateIcon className="navbarCreatePost__icon" />
+						</CreatePostButton>
 
-							<div style={{ position: "relative" }}>
-								<UserAvatar
-									src={user?.avatar}
-									username={user?.username}
-									loading={loading}
-									onClick={() => setUserDropdownIsOpen((prev) => !prev)}
-								/>
-								<UserDropdownMenu
-									isOpen={userDropdownIsOpen}
-									onClose={() => setUserDropdownIsOpen(false)}
-								/>
-							</div>
-						</RightSide>
-					)}
+						<div style={{ position: "relative" }}>
+							<UserAvatar
+								src={user?.avatar}
+								username={user?.username}
+								loading={loading}
+								onClick={() => setUserDropdownIsOpen((prev) => !prev)}
+							/>
+							<UserDropdownMenu
+								isOpen={userDropdownIsOpen}
+								onClose={() => setUserDropdownIsOpen(false)}
+							/>
+						</div>
+					</RightSide>
 				</Wrapper>
 			</NavContainer>
 		</>

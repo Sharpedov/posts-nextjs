@@ -86,6 +86,7 @@ const FollowingItem = styled(CardActionArea)`
 	padding-bottom: 100%;
 	border-radius: 3px;
 	overflow: hidden;
+	background: rgba(255, 255, 255, 0.1);
 
 	> span {
 		background: transparent;
