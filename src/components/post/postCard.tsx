@@ -250,6 +250,7 @@ const ImagePostContainer = styled.div`
 	position: relative;
 	width: 100%;
 	height: 100%;
+	background: ${({ theme }) => `${theme.colors.background.primary + "77"}`};
 	padding-bottom: 120%;
 
 	> span {

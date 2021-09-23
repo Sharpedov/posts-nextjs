@@ -15,13 +15,13 @@ export default authMiddleware(async function handler(req, res) {
 			{
 				try {
 					const { userId } = body;
+
 					const post = await PostMessage.findByIdAndUpdate(
 						id,
 						{
-							$push: {
+							$pull: {
 								likes: userId,
 							},
-							shoppingCart: [],
 						},
 						{
 							new: true,

@@ -1,11 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import router from "next/router";
-import {
-	authFetcher,
-	authPatcher,
-	authPoster,
-} from "src/utils/authAxiosMethods";
+import { authPatcher, authPoster } from "src/utils/authAxiosMethods";
+import { mutate } from "swr";
 import { addNotification } from "./notificationsSlice";
 
 interface ICreateAccount {
@@ -35,19 +32,6 @@ interface IUpdateProfile {
 	onComplete?;
 }
 
-export const getLoggedUser = createAsyncThunk(
-	"auth/getLoggedUser",
-	async () => {
-		try {
-			const user = await authFetcher("/api/auth/getLoggedUser");
-
-			return user;
-		} catch (error) {
-			throw error.response.data.message;
-		}
-	}
-);
-
 export const createAccount = createAsyncThunk(
 	"auth/createAccount",
 	async ({ username, email, password }: ICreateAccount, { dispatch }) => {
@@ -76,9 +60,8 @@ export const login = createAsyncThunk(
 				.post("/api/auth/login", { email, password })
 				.then((res) => res.data);
 
-			await dispatch(getLoggedUser());
-
-			router.push("/home");
+			await mutate("/api/auth/getLoggedUser");
+			router.replace("/home");
 
 			return;
 		} catch (error) {
@@ -101,6 +84,8 @@ export const updateAccount = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
+			if (!user) throw "User are not logged in";
+
 			await authPatcher(`/api/users/updateAccount`, {
 				username: user.username === username ? undefined : username,
 				email: user.email,
@@ -111,7 +96,7 @@ export const updateAccount = createAsyncThunk(
 
 			onComplete && onComplete();
 
-			dispatch(getLoggedUser());
+			await mutate("/api/auth/getLoggedUser");
 			dispatch(addNotification({ message: "User has been updated" }));
 
 			return null;
@@ -132,6 +117,8 @@ export const updateProfile = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
+			if (!user) throw "User are not logged in";
+
 			await authPatcher(`/api/users/updateProfile`, {
 				email: user.email,
 				avatar,
@@ -141,8 +128,8 @@ export const updateProfile = createAsyncThunk(
 
 			onComplete && onComplete();
 
+			await mutate("/api/auth/getLoggedUser");
 			dispatch(addNotification({ message: "User has been updated" }));
-			dispatch(getLoggedUser());
 
 			return null;
 		} catch (error) {
@@ -155,6 +142,7 @@ export const updateProfile = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async () => {
 	try {
 		await authPoster("/api/auth/logout");
+		await mutate("/api/auth/getLoggedUser");
 		router.replace("/");
 
 		return null;
@@ -165,7 +153,6 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 
 const initialState = {
 	user: null,
-	loading: true,
 	error: null,
 	login: {
 		loading: false,
@@ -190,22 +177,12 @@ const initialState = {
 const authSlice = createSlice({
 	name: "auth",
 	initialState,
-	reducers: {},
-	extraReducers: (builder) => {
-		builder.addCase(getLoggedUser.pending, (state) => {
-			state.loading = true;
-			state.user = state.user;
-			state.error = null;
-		});
-		builder.addCase(getLoggedUser.fulfilled, (state, action) => {
+	reducers: {
+		setLoggedUser: (state, action) => {
 			state.user = action.payload;
-			state.loading = false;
-		});
-		builder.addCase(getLoggedUser.rejected, (state, action) => {
-			state.loading = false;
-			state.error = action.error.message;
-		});
-
+		},
+	},
+	extraReducers: (builder) => {
 		builder.addCase(login.pending, (state) => {
 			state.login.loading = true;
 			state.login.error = null;
@@ -256,12 +233,11 @@ const authSlice = createSlice({
 
 		builder.addCase(logout.fulfilled, (state) => {
 			state.user = null;
-			state.loading = false;
 			state.error = null;
 		});
 	},
 });
 
-export const {} = authSlice.actions;
+export const { setLoggedUser } = authSlice.actions;
 
 export default authSlice.reducer;

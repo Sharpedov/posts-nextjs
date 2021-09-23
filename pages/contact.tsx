@@ -2,15 +2,19 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import CustomButton from "src/components/customButton";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import Footer from "src/components/footer";
+import { useRouter } from "next/router";
 
 export default function HomePage() {
-	const { redirectIfNotLogged } = useAuth();
+	const { loggedOut } = useUser();
+	const { replace } = useRouter();
 
 	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
+		loggedOut && replace("/");
+	}, [loggedOut, replace]);
+	if (loggedOut) return null;
+
 	return (
 		<>
 			<Head>

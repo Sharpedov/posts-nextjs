@@ -4,7 +4,7 @@ import PostMessage from "mongodb/models/PostMessage";
 export default async function handler(req, res) {
 	const {
 		method,
-		query: { profileName },
+		query: { username },
 	} = req;
 	await dbConnect();
 
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
 					const startIndex = (Number(page) - 1) * Number(limit);
 
-					const posts = await PostMessage.find({ creator: profileName })
+					const posts = await PostMessage.find({ creator: username })
 						.sort({
 							createdAt: -1,
 						})

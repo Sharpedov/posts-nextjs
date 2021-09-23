@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import CustomButton from "src/components/customButton";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const mapState = (state) => ({
 });
 
 const ProfileSettings = ({}: IProps) => {
-	const { user, loading, isLogged } = useAuth();
+	const { user, loading, isLogged } = useUser();
 	const {
 		uploadAvatarUrl,
 		uploadBannerUrl,
@@ -94,8 +94,8 @@ const ProfileSettings = ({}: IProps) => {
 		updateProfileLoading,
 		descriptionValue,
 		user,
-		isLogged,
 		uploadBannerUrl,
+		isLogged,
 	]);
 
 	return (

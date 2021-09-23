@@ -15,7 +15,6 @@ import PostMoreOptions from "../postMoreOptions";
 import moment from "moment";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 interface IProps {
 	postId;
@@ -31,7 +30,7 @@ const PostDetails = ({
 	onCloseModal,
 }: IProps) => {
 	const { data, error } = useSWR(
-		isInModal && postId && `/api/posts/post/${postId}`,
+		isInModal && postId && `/api/posts/${postId}`,
 		fetcher
 	);
 	const postData = useMemo(() => {

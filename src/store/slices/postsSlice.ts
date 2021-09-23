@@ -62,12 +62,12 @@ export const editPost = createAsyncThunk(
 				posts: { mutatePosts },
 			} = getState() as any;
 
-			const data = await authPatcher(`/api/posts/post/auth/${id}`, {
+			const data = await authPatcher(`/api/posts/${id}/manage`, {
 				post: postData,
 			});
 
 			await mutatePosts();
-			await mutate(`/api/posts/post/${id}`);
+			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Post has been edited" }));
@@ -91,12 +91,14 @@ export const likePost = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			const data = await authPatcher(`/api/posts/post/like/${id}`, {
+			if (!user) throw "User are not logged in";
+
+			const data = await authPatcher(`/api/posts/${id}/like`, {
 				userId: user._id,
 			});
 
 			await mutatePosts();
-			await mutate(`/api/posts/post/${id}`);
+			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 			dispatch(addNotification({ message: "Liked" }));
 
@@ -118,12 +120,14 @@ export const dislikePost = createAsyncThunk(
 				auth: { user },
 			} = getState() as any;
 
-			const data = await authPatcher(`/api/posts/post/dislike/${id}`, {
+			if (!user) throw "User are not logged in";
+
+			const data = await authPatcher(`/api/posts/${id}/dislike`, {
 				userId: user._id,
 			});
 
 			await mutatePosts();
-			await mutate(`/api/posts/post/${id}`);
+			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Disliked" }));
@@ -144,10 +148,10 @@ export const deletePost = createAsyncThunk(
 				posts: { mutatePosts },
 			} = getState() as any;
 
-			const data = await authDeleter(`/api/posts/post/auth/${id}`);
+			const data = await authDeleter(`/api/posts/${id}/manage`);
 
 			await mutatePosts();
-			await mutate(`/api/posts/post/${id}`);
+			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Post has been deleted" }));
@@ -164,9 +168,7 @@ export const getPost = createAsyncThunk(
 	"posts/getPost",
 	async ({ id }: IGetPost, { dispatch }) => {
 		try {
-			const data = await axios
-				.get(`/api/posts/post/${id}`)
-				.then((res) => res.data);
+			const data = await axios.get(`/api/posts/${id}`).then((res) => res.data);
 
 			return { data };
 		} catch (error) {

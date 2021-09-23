@@ -11,7 +11,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmModal from "src/components/modal/confirmModal";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import ControllerInput from "src/components/input/controllerInput";
 import DefaultInput from "src/components/input/defaultInput";
 import { updateAccount } from "src/store/slices/authSlice";
@@ -54,14 +54,13 @@ const mapState = (state) => ({
 });
 
 const AccountSettings = ({}: IProps) => {
-	const { user, loading } = useAuth();
+	const { user, loading, isLogged, loggedOut } = useUser();
 	const { updateAccountLoading } = useSelector(mapState);
 	const methods = useForm<IFormInputs>({ resolver: yupResolver(yupSchema) });
 	const {
 		handleSubmit,
 		control,
 		formState: { errors },
-		reset,
 	} = methods;
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 	const [changeDataModalIsOpen, setChangeDataModalIsOpen] =
@@ -76,7 +75,7 @@ const AccountSettings = ({}: IProps) => {
 	};
 
 	const editUserHandler = useCallback(() => {
-		if (!!formData) {
+		if (!!formData && isLogged) {
 			const { username, email, newPassword } = formData;
 
 			dispatch(
@@ -91,12 +90,11 @@ const AccountSettings = ({}: IProps) => {
 						setConfirmPasswordValue(null);
 						setChangeDataModalIsOpen(false);
 						setIsEdit(false);
-						reset();
 					},
 				})
 			);
 		}
-	}, [dispatch, formData, confirmPasswordValue, reset]);
+	}, [dispatch, formData, confirmPasswordValue, isLogged]);
 
 	return (
 		<>

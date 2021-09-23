@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import { dislikePost, likePost } from "src/store/slices/postsSlice";
 
 interface IPostLikeHandler {
@@ -18,7 +18,7 @@ const mapState = (state) => ({
 
 export const PostLikeHandler = ({ likes }: IPostLikeHandler) => {
 	const { likePostLoading, dislikePostLoading } = useSelector(mapState);
-	const { user, isLogged } = useAuth();
+	const { user, isLogged } = useUser();
 	const dispatch = useDispatch();
 
 	const isLikedFilter = useMemo(() => {

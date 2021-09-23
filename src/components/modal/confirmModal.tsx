@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { DisableScrollbar } from "src/utils/disableScrollbar";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import ScaleLoading from "../loading/scaleLoading";
 import CustomButton from "../customButton";
 import LinearLoading from "../loading/linearLoading";
@@ -41,7 +41,7 @@ const ConfirmModal = ({
 	onClickButton,
 	loading,
 }: IProps) => {
-	const { loading: authLoading } = useAuth();
+	const { loading: userLoading } = useUser();
 	const backdropRef = useRef<HTMLElement>(null!);
 	DisableScrollbar(isOpen);
 
@@ -84,7 +84,7 @@ const ConfirmModal = ({
 						animate="visible"
 						exit="hidden"
 					>
-						{authLoading ? (
+						{userLoading ? (
 							<ScaleLoading center marginTop={30} />
 						) : (
 							<FocusTrap focusTrapOptions={{ initialFocus: false }}>

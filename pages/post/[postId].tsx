@@ -9,19 +9,20 @@ import { CardActionArea } from "@material-ui/core";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import { Skeleton } from "@material-ui/lab";
 import Image from "next/image";
 import Footer from "src/components/footer";
 
 export default function PostPage() {
-	const { redirectIfNotLogged } = useAuth();
+	const { loggedOut } = useUser();
 	const {
+		replace,
 		query: { postId },
+		push,
 	} = useRouter();
-	const { push } = useRouter();
 	const { data: postData, error: postError } = useSWR(
-		postId && `/api/posts/post/${postId}`,
+		postId && `/api/posts/${postId}`,
 		fetcher
 	);
 	const { data: recommendedPosts, error: recommendedError } = useSWR(
@@ -30,13 +31,15 @@ export default function PostPage() {
 	);
 
 	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
+		loggedOut && replace("/");
+	}, [loggedOut, replace]);
 
 	const filterRecommendedPosts = useMemo(() => {
 		if (!recommendedPosts || !postData) return;
 		return recommendedPosts.filter((post) => post._id !== postData._id);
 	}, [postData, recommendedPosts]);
+
+	if (loggedOut) return null;
 
 	if (postError) {
 		push("/404");

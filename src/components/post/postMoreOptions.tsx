@@ -9,7 +9,7 @@ import ConfirmModal from "../modal/confirmModal";
 import Modal from "../modal";
 import CreatePostForm from "../form/createPostForm";
 import SelectMenu from "../selectMenu";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import { useRouter } from "next/router";
 
 interface IProps {
@@ -38,7 +38,7 @@ const mapState = (state) => ({
 });
 
 const PostMoreOptions = ({ isOpen, onClose, postId, postCreator }: IProps) => {
-	const { user, isLogged } = useAuth();
+	const { user, isLogged } = useUser();
 	const [selectedOption, setSelectedOption] = useState<IOptionsData>(null);
 	const { deleteLoading } = useSelector(mapState);
 	const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const PostMoreOptions = ({ isOpen, onClose, postId, postCreator }: IProps) => {
 				? ownerOptionsData
 				: defaultOptionsData;
 		}
-	}, [isLogged, user, postCreator]);
+	}, [user, postCreator, isLogged]);
 
 	const selectOptionHandler = useCallback(
 		(option: IOptionsData) => {

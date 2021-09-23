@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import { userDropdownData } from "src/data/navbarData";
 import Link from "next/link";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -31,7 +31,7 @@ const dropdownMenuVariants = {
 
 const UserDropdownMenu = ({ isOpen, onClose }: IProps) => {
 	const dropdownMenuRef = useRef<HTMLElement>(null);
-	const { user, isLogged } = useAuth();
+	const { user, isLogged } = useUser();
 	const dispatch = useDispatch();
 
 	const escapeListener = useCallback(

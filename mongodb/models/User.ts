@@ -9,6 +9,8 @@ const UserSchema = new mongoose.Schema(
 		banner: { type: String },
 		description: { type: String },
 		location: { type: String },
+		followers: { type: [String], default: [] },
+		following: { type: [String], default: [] },
 		tokenVersion: { type: Number, default: 0 },
 	},
 	{

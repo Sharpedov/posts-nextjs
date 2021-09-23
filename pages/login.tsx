@@ -3,7 +3,6 @@ import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import LoginForm from "src/components/form/loginForm";
-import cookie from "cookie";
 
 const backgroundData = [
 	"/images/home_background_1.jfif",

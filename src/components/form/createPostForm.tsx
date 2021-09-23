@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonBase, IconButton } from "@material-ui/core";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import CustomIconButton from "../customIconButton";
 import CustomButton from "../customButton";
@@ -64,17 +64,13 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 		formState: { errors },
 		reset,
 	} = methods;
-	const { user, loading } = useAuth();
+	const { user, loading } = useUser();
 	const filepickerRef = useRef(null);
 	const dispatch = useDispatch();
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
 	const [selectedImage, setSelectedImage] = useState(null);
 	const [tags, setTags] = useState([]);
 	const [uploadError, setUploadError] = useState<string>("");
-
-	const checkKeyDown = (e) => {
-		if (e.code === "Enter") e.preventDefault();
-	};
 
 	const onSubmit: SubmitHandler<IFormInputs> = (data: IFormInputs) => {
 		if (editMode) {

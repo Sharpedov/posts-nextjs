@@ -2,15 +2,18 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import SettingsTemplate from "src/templates/profile/settings";
 import ProfileSettings from "src/templates/profile/settings/profileSettings";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import Footer from "src/components/footer";
+import { useRouter } from "next/router";
 
 export default function AccountProfilePage() {
-	const { redirectIfNotLogged } = useAuth();
+	const { loggedOut } = useUser();
+	const { replace } = useRouter();
 
 	useEffect(() => {
-		redirectIfNotLogged();
-	}, [redirectIfNotLogged]);
+		loggedOut && replace("/");
+	}, [loggedOut, replace]);
+	if (loggedOut) return null;
 
 	return (
 		<>

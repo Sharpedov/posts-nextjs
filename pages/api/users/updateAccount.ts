@@ -14,9 +14,9 @@ export default authMiddleware(async function handler(req, res) {
 			try {
 				const { username, email, newEmail, password, newPassword } = body;
 				const existingUser = await User.findOne({ email }).select("+password");
-				const existingUsername = await User.findOne({ username }).select(
-					"username"
-				);
+				const existingUsername = await User.findOne({
+					username: new RegExp("^" + username + "$", "i"),
+				}).select("username");
 				const existingEmail = await User.findOne({ email: newEmail }).select(
 					"username"
 				);

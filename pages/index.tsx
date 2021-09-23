@@ -5,7 +5,6 @@ import CustomButton from "src/components/customButton";
 import { motion } from "framer-motion";
 import { Link as ScrollLink } from "react-scroll";
 import Image from "next/image";
-import cookie from "cookie";
 import Footer from "src/components/footer";
 
 const backgroundData = [

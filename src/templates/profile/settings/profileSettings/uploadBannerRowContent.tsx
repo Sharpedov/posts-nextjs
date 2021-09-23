@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
 import { FileError, useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import CustomButton from "src/components/customButton";
 import {
 	resetUploadBanner,
@@ -25,7 +25,7 @@ const mapState = (state) => ({
 });
 
 const UploadBannerRowContent = ({ setProgress }: IProps) => {
-	const { user } = useAuth();
+	const { user } = useUser();
 	const { uploadBannerUrl } = useSelector(mapState);
 	const [fileBanner, setFileBanner] = useState<IUploadedFile[]>([]);
 	const onDrop = useCallback((acceptedFiles: File[], rejFiles) => {

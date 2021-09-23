@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 interface IProps {}
 
-const NotLoggedNavbar = ({}: IProps) => {
+const LoggedOutNavbar = ({}: IProps) => {
 	const { pathname } = useRouter();
 
 	return (
@@ -44,7 +44,7 @@ const NotLoggedNavbar = ({}: IProps) => {
 	);
 };
 
-export default NotLoggedNavbar;
+export default LoggedOutNavbar;
 
 const NavContainer = styled.nav`
 	position: sticky;

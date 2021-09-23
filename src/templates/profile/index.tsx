@@ -4,9 +4,11 @@ import UserAvatar from "src/components/user/userAvatar";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useAuth } from "src/components/authProvider";
+import { useUser } from "src/components/userProvider";
 import useSWR from "swr";
 import { fetcher } from "src/utils/fetcher";
+import CustomButton from "src/components/customButton";
+import { FollowHelper } from "src/utils/followHelper";
 
 interface IProps {
 	children: React.ReactNode;
@@ -15,16 +17,17 @@ interface IProps {
 
 const profileNavData = [
 	{ title: "Overview", href: "" },
-	{ title: "Posts", href: "/posts" },
+	{ title: "Following", href: "/following" },
+	{ title: "Followers", href: "/followers" },
 ];
 
 const ProfileTemplate = ({ profileName, children }: IProps) => {
 	const { pathname, push } = useRouter();
-	const { user, loading } = useAuth();
+	const { user, loading, isLogged } = useUser();
 
 	const { data: dataProfile, error: errorProfile } = useSWR(
-		profileName !== user?.username &&
-			!!profileName &&
+		!!profileName &&
+			profileName !== user?.username &&
 			`/api/users/${profileName}`,
 		fetcher
 	);
@@ -46,7 +49,10 @@ const ProfileTemplate = ({ profileName, children }: IProps) => {
 		}
 	}, [loading, profileName, user, dataProfile]);
 
-	if (!profileData) return null;
+	const { isFollowing, handleFollow, followLoading } = FollowHelper({
+		followers: profileData.followers,
+		username: profileName,
+	});
 
 	if (errorProfile) {
 		push("/404");
@@ -73,9 +79,24 @@ const ProfileTemplate = ({ profileName, children }: IProps) => {
 							isProfile
 						/>
 
-						{!profileData.loading && (
+						{profileData.loading ? null : (
 							<Username>{profileData.username}</Username>
 						)}
+						<BannerActions>
+							{profileData.loading || !isLogged
+								? null
+								: user.username! !== profileName && (
+										<CustomButton
+											size="small"
+											color={isFollowing ? "secondary" : "primary"}
+											onClick={handleFollow}
+											disabled={loading}
+											loading={followLoading}
+										>
+											{isFollowing ? "Unfollow" : "Follow"}
+										</CustomButton>
+								  )}
+						</BannerActions>
 					</BannerContent>
 				</BannerWrapper>
 			</BannerContainer>
@@ -170,15 +191,27 @@ const BannerContent = styled.div`
 	}
 `;
 
+const BannerActions = styled.div`
+	display: flex;
+	flex-grow: 1;
+	align-items: flex-end;
+	justify-content: flex-end;
+	padding: 1.2rem 0;
+
+	@media ${({ theme }) => theme.breakpoints.md} {
+		padding: 1.5rem 0;
+	}
+`;
+
 const Username = styled(motion.span)`
 	font-weight: 700;
 	font-size: 1.75rem;
 	text-shadow: 0 0px 3px rgba(0, 0, 0, 0.7);
-	padding: 1.5rem 2rem;
+	padding: 1.2rem 2rem;
 
 	@media ${({ theme }) => theme.breakpoints.md} {
 		font-size: 1.9rem;
-		padding: 2rem 2.5rem;
+		padding: 1.5rem 2.5rem;
 	}
 `;
 

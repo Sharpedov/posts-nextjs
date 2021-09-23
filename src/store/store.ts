@@ -5,6 +5,7 @@ import postsSlice from "./slices/postsSlice";
 import notificationsSlice from "./slices/notificationsSlice";
 import uploadFilesSlice from "./slices/uploadFilesSlice";
 import themeSlice from "./slices/themeSlice";
+import userSlice from "./slices/userSlice";
 
 const reducer = combineReducers({
 	auth: authSlice,
@@ -12,6 +13,7 @@ const reducer = combineReducers({
 	notifications: notificationsSlice,
 	uploadFiles: uploadFilesSlice,
 	theme: themeSlice,
+	user: userSlice,
 });
 
 const store = configureStore({

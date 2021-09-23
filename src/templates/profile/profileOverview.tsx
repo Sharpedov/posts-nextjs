@@ -23,7 +23,9 @@ const ProfileOverview = (props) => {
 		isEmpty,
 		hasNextPage,
 		mutate,
-	} = useInfiniteQuery({ queryKey: `/api/posts/${profileName}?limit=20` });
+	} = useInfiniteQuery({
+		queryKey: `/api/posts/userPosts?username=${profileName}&limit=20`,
+	});
 
 	const dispatch = useDispatch();
 	const observer = useRef(null!);

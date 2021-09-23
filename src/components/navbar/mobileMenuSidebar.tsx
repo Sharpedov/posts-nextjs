@@ -5,7 +5,7 @@ import { Button, IconButton } from "@material-ui/core";
 import Sidebar from "../sidebar";
 import { linksListData, userDropdownData } from "src/data/navbarData";
 import Link from "next/link";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import UserAvatar from "../user/userAvatar";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { logout } from "src/store/slices/authSlice";
@@ -17,7 +17,7 @@ interface IProps {
 
 const MobileMenuSidebar = ({ setCreatePostIsOpen }: IProps) => {
 	const [menuSidebarIsOpen, setMenuSidebarIsOpen] = useState<boolean>(false);
-	const { user, isLogged, loading } = useAuth();
+	const { user, loading } = useUser();
 	const dispatch = useDispatch();
 
 	return (
@@ -56,7 +56,7 @@ const MobileMenuSidebar = ({ setCreatePostIsOpen }: IProps) => {
 							</Link>
 						))}
 					</LinksList>
-					{isLogged && (
+					{!loading && (
 						<>
 							<Heading>Profile</Heading>
 							<UserMenu>

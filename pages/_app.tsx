@@ -3,7 +3,7 @@ import { StylesProvider } from "@material-ui/styles";
 import GlobalStyle from "styles/globalStyle";
 import store from "src/store/store";
 import GlobalLayout from "src/components/globalLayout";
-import AuthProvider from "src/components/authProvider";
+import AuthProvider from "src/components/userProvider";
 import NotificationsProvider from "src/components/notificationsProvider";
 import ThemeProvider from "src/components/themeProvider";
 import Head from "next/head";

@@ -8,7 +8,7 @@ import Modal from "../modal";
 import CustomIconButton from "../customIconButton";
 import { linksListData } from "src/data/navbarData";
 import { useRouter } from "next/router";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import UserAvatar from "../user/userAvatar";
 import { useScrollListener } from "src/hooks/useScrollListener";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,12 +18,12 @@ import TagsInput from "../input/tagsInput";
 import CustomButton from "../customButton";
 import CancelIcon from "@material-ui/icons/Cancel";
 import MobileNavbarWrapper from "./mobileNavbarWrapper";
-import NotLoggedNavbar from "./notLoggedNavbar";
+import LoggedOutNavbar from "./loggedOutNavbar";
 
 interface IProps {}
 
 const Navbar = ({}: IProps) => {
-	const { user, loading, isLogged } = useAuth();
+	const { user, loading, loggedOut, isLogged } = useUser();
 	const [createPostIsOpen, setCreatePostIsOpen] = useState(false);
 	const [userDropdownIsOpen, setUserDropdownIsOpen] = useState<boolean>(false);
 	const { pathname, push } = useRouter();
@@ -61,9 +61,9 @@ const Navbar = ({}: IProps) => {
 		pathname === "/" ||
 		pathname === "/login" ||
 		pathname === "/createAccount" ||
-		(!isLogged && !loading)
+		loggedOut
 	) {
-		return <NotLoggedNavbar />;
+		return <LoggedOutNavbar />;
 	}
 
 	return (
@@ -148,43 +148,45 @@ const Navbar = ({}: IProps) => {
 						</SearchContainer>
 					</LeftSide>
 
-					<RightSide>
-						<LinksList>
-							{linksListData.desktop.map((link, i) => (
-								<CustomIconButton
-									key={`${i}-${link.title}`}
-									component="li"
-									ariaLabel={link.title}
-									href={
-										link.href === "/profile"
-											? `${link.href}/${user?.username}`
-											: link.href
-									}
-									Icon={link.icon}
-									size="medium"
-								/>
-							))}
-						</LinksList>
-						<CreatePostButton
-							onClick={() => setCreatePostIsOpen(true)}
-							aria-label="Create post"
-						>
-							<CreateIcon className="navbarCreatePost__icon" />
-						</CreatePostButton>
+					{isLogged && (
+						<RightSide>
+							<LinksList>
+								{linksListData.desktop.map((link, i) => (
+									<CustomIconButton
+										key={`${i}-${link.title}`}
+										component="li"
+										ariaLabel={link.title}
+										href={
+											link.href === "/profile"
+												? `${link.href}/${user?.username}`
+												: link.href
+										}
+										Icon={link.icon}
+										size="medium"
+									/>
+								))}
+							</LinksList>
+							<CreatePostButton
+								onClick={() => setCreatePostIsOpen(true)}
+								aria-label="Create post"
+							>
+								<CreateIcon className="navbarCreatePost__icon" />
+							</CreatePostButton>
 
-						<div style={{ position: "relative" }}>
-							<UserAvatar
-								src={user?.avatar}
-								username={user?.username}
-								loading={loading}
-								onClick={() => setUserDropdownIsOpen((prev) => !prev)}
-							/>
-							<UserDropdownMenu
-								isOpen={userDropdownIsOpen}
-								onClose={() => setUserDropdownIsOpen(false)}
-							/>
-						</div>
-					</RightSide>
+							<div style={{ position: "relative" }}>
+								<UserAvatar
+									src={user?.avatar}
+									username={user?.username}
+									loading={loading}
+									onClick={() => setUserDropdownIsOpen((prev) => !prev)}
+								/>
+								<UserDropdownMenu
+									isOpen={userDropdownIsOpen}
+									onClose={() => setUserDropdownIsOpen(false)}
+								/>
+							</div>
+						</RightSide>
+					)}
 				</Wrapper>
 			</NavContainer>
 		</>

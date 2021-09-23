@@ -13,6 +13,7 @@ export default async function handler(req, res) {
 		case "GET":
 			{
 				try {
+					console.log("id", id);
 					const data = await PostMessage.findById(id);
 
 					if (!data) return res.status(400).json({ success: false });

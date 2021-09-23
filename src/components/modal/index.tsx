@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { DisableScrollbar } from "src/utils/disableScrollbar";
-import { useAuth } from "../authProvider";
+import { useUser } from "../userProvider";
 import ScaleLoading from "../loading/scaleLoading";
 
 interface IProps {
@@ -34,7 +34,7 @@ const Modal = ({
 	shoundBeCloseOutside,
 	scroll,
 }: IProps) => {
-	const { loading } = useAuth();
+	const { loading } = useUser();
 	const backdropRef = useRef<HTMLElement>(null);
 	DisableScrollbar(isOpen);
 

@@ -1,14 +1,6 @@
 import dbConnect from "mongodb/dbConnect";
 import PostMessage from "mongodb/models/PostMessage";
 
-export const config = {
-	api: {
-		bodyParser: {
-			sizeLimit: "1mb",
-		},
-	},
-};
-
 export default async function handler(req, res) {
 	const {
 		method,
