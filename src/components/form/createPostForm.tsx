@@ -113,34 +113,27 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 		return null;
 	};
 
-	const addImageHandler = useCallback(
+	const handleAddImage = useCallback(
 		(e) => {
 			if (!!e.target.files[0]) {
 				setUploadError("");
-				const file = e.target.files[0];
-				const reader = new FileReader();
+				const file = e.target.files[0] as File;
 
 				if (file.size >= 4 * 1024 * 1024)
 					return setUploadError("File is too big");
 
-				if (file) {
-					reader.readAsDataURL(e.target.files[0]);
-				}
-
-				reader.onload = (readerEvent) => {
-					dispatch(
-						uploadFilePost({
-							file: readerEvent.target.result,
-							setProgress: setUploadProgress,
-						})
-					);
-				};
+				dispatch(
+					uploadFilePost({
+						file,
+						setProgress: setUploadProgress,
+					})
+				);
 			}
 		},
 		[dispatch]
 	);
 
-	const removeImage = useCallback(() => {
+	const handleRemoveImage = useCallback(() => {
 		dispatch(resetUploadPost());
 		setSelectedImage(null);
 	}, [dispatch]);
@@ -206,27 +199,27 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 								<SelectedImageContainer
 									layout
 									initial={{
-										scale: 0.9,
+										scale: 0.65,
 										opacity: 0,
-										transition: { duration: 0.35 },
+										transition: { duration: 0.4 },
 									}}
 									animate={{
 										scale: 1,
 										opacity: 1,
-										transition: { duration: 0.35 },
+										transition: { duration: 0.4 },
 									}}
 									exit={{ opacity: 0 }}
 								>
 									{!createLoading ?? !editLoading ? (
-										<RemoveImageButton onClick={removeImage} tabIndex={-1}>
+										<RemoveImageButton
+											onClick={handleRemoveImage}
+											tabIndex={-1}
+										>
 											<CloseRoundedIcon className="createPostFormRemoveImageButton__icon" />
 										</RemoveImageButton>
 									) : null}
-									<SelectedImage
-										src={selectedImage}
-										alt="Selected image"
-										layout
-									/>
+
+									<SelectedImage src={selectedImage} alt="Selected image" />
 								</SelectedImageContainer>
 							)}
 						</AnimatePresence>
@@ -241,7 +234,7 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 							<ErrorMessage layout>{errors.message.message}</ErrorMessage>
 						)}
 
-						<TagsRow>
+						<TagsRow layout>
 							<TagsInput
 								tags={tags ?? []}
 								setTags={setTags}
@@ -261,7 +254,7 @@ const CreatePostForm = ({ onClose, editMode }: IProps) => {
 								<input
 									ref={filepickerRef}
 									type="file"
-									onChange={(e) => addImageHandler(e)}
+									onChange={(e) => handleAddImage(e)}
 									hidden
 									accept="image/png, image/jpeg"
 								/>
@@ -463,6 +456,7 @@ const SelectedImage = styled(motion.img)`
 	height: 100%;
 	max-height: 675px;
 	object-fit: contain;
+	background: rgba(255, 255, 255, 0.1);
 `;
 
 const RemoveImageButton = styled(ButtonBase)`

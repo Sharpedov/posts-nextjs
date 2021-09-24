@@ -26,7 +26,7 @@ const TagsInput = ({ tags, setTags, placeholder, flexibility }: IProps) => {
 	const { register, handleSubmit } = methods;
 	const inputRef = useRef(null!);
 
-	const addTagHandler = useCallback(
+	const handleAddTag = useCallback(
 		(data: IformInputs, e) => {
 			const newTag = data.tag.trim();
 			const isExists = tags.find((tag) => tag === newTag);
@@ -42,7 +42,7 @@ const TagsInput = ({ tags, setTags, placeholder, flexibility }: IProps) => {
 		[tags, setTags]
 	);
 
-	const removeTagHandler = useCallback(
+	const handleRemoveTag = useCallback(
 		(tag) => {
 			setTags((prev) => prev.filter((tagEl) => tagEl !== tag));
 		},
@@ -55,7 +55,7 @@ const TagsInput = ({ tags, setTags, placeholder, flexibility }: IProps) => {
 				{tags.map((tag, i) => (
 					<Tag key={`tag-${tag}-${i}`}>
 						<motion.span>{tag}</motion.span>
-						<RemoveTag onClick={() => removeTagHandler(tag)}>
+						<RemoveTag onClick={() => handleRemoveTag(tag)}>
 							<CancelIcon className="tagsInputTagCancel__icon" />
 						</RemoveTag>
 					</Tag>
@@ -67,7 +67,7 @@ const TagsInput = ({ tags, setTags, placeholder, flexibility }: IProps) => {
 				ref={inputRef}
 				type="text"
 				onKeyUp={(event) =>
-					event.key === "Enter" && handleSubmit(addTagHandler)()
+					event.key === "Enter" && handleSubmit(handleAddTag)()
 				}
 				placeholder={placeholder ?? "Search by tags"}
 			/>
