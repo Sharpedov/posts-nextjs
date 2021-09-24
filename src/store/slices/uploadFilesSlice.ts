@@ -1,53 +1,46 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import { addNotification } from "./notificationsSlice";
 
 interface IUploadFile {
-	file;
-	setProgress?;
+	file: File;
+	setProgress?: (percentage: number) => void;
 }
 
-const uploadFileHandler = ({ file, setProgress }: IUploadFile) => {
-	const uploadFile = (file: File, onProgress: (percentage: number) => void) => {
-		const url = "https://api.cloudinary.com/v1_1/demo/image/upload";
-		const key = "docs_upload_example_us_preset";
+async function handleUploadFile(
+	file: File,
+	setProgress: (percentage: number) => void
+) {
+	const formData = new FormData();
+	const url = "https://api.cloudinary.com/v1_1/demo/image/upload";
+	const key = "docs_upload_example_us_preset";
+	formData.append("file", file);
+	formData.append("upload_preset", key);
 
-		return new Promise((res, rej) => {
-			const xhr = new XMLHttpRequest();
-			xhr.open("POST", url);
-
-			xhr.onload = () => {
-				const resp = JSON.parse(xhr.responseText);
-				res(resp.secure_url);
-			};
-			xhr.onerror = (evt) => rej(evt);
-			setProgress &&
-				(xhr.upload.onprogress = (event) => {
-					if (event.lengthComputable) {
-						const precentage = (event.loaded / event.total) * 100;
-						onProgress(Math.round(precentage));
-					}
-				});
-
-			const formData = new FormData();
-			formData.append("file", file);
-			formData.append("upload_preset", key);
-
-			xhr.send(formData);
+	try {
+		const { data } = await axios.post(url, formData, {
+			onUploadProgress: (progressEvent) => {
+				let percentCompleted = Math.round(
+					(progressEvent.loaded * 100) / progressEvent.total
+				);
+				setProgress(percentCompleted);
+			},
+			headers: {
+				"Content-Type": "text/plain",
+				"X-Requested-With": "XMLHttpRequest",
+			},
 		});
-	};
-
-	const upload = async () => {
-		return await uploadFile(file, setProgress);
-	};
-
-	return upload();
-};
+		return data.secure_url;
+	} catch (err) {
+		throw err;
+	}
+}
 
 export const uploadFileAvatar = createAsyncThunk(
 	"uploadFile/uploadFileAvatar",
 	async ({ file, setProgress }: IUploadFile, { dispatch }) => {
 		try {
-			const url = await uploadFileHandler({ file, setProgress });
+			const url = await handleUploadFile(file, setProgress);
 
 			return url;
 		} catch (error) {
@@ -65,7 +58,7 @@ export const uploadFilePost = createAsyncThunk(
 	"uploadFile/uploadFilePost",
 	async ({ file, setProgress }: IUploadFile, { dispatch }) => {
 		try {
-			const url = await uploadFileHandler({ file, setProgress });
+			const url = await handleUploadFile(file, setProgress);
 
 			return url;
 		} catch (error) {
@@ -83,7 +76,7 @@ export const uploadFileBanner = createAsyncThunk(
 	"uploadFile/uploadFileBanner",
 	async ({ file, setProgress }: IUploadFile, { dispatch }) => {
 		try {
-			const url = await uploadFileHandler({ file, setProgress });
+			const url = await handleUploadFile(file, setProgress);
 
 			return url;
 		} catch (error) {
