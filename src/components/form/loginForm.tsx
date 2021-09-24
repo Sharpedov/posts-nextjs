@@ -97,6 +97,7 @@ const LoginForm = ({}: IProps) => {
 						control={control}
 						render={({ field }) => (
 							<FormInput
+								color="primary"
 								field={field}
 								label="Password"
 								type="password"

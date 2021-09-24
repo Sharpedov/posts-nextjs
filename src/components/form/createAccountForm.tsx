@@ -120,6 +120,7 @@ const CreateAccountForm = ({}: IProps) => {
 						control={control}
 						render={({ field }) => (
 							<FormInput
+								color="primary"
 								field={field}
 								label="Password"
 								type="password"
@@ -133,6 +134,7 @@ const CreateAccountForm = ({}: IProps) => {
 						control={control}
 						render={({ field }) => (
 							<FormInput
+								color="primary"
 								field={field}
 								label="Repeat Password"
 								type="password"
