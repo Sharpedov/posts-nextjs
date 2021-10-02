@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "src/components/customButton";
 import UserAvatar from "src/components/user/userAvatar";
@@ -17,12 +17,11 @@ interface IProps {
 }
 
 const mapState = (state) => ({
-	addedComment: state.posts.addComment.comment,
 	addCommentLoading: state.posts.addComment.loading,
 });
 
 const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
-	const { addedComment, addCommentLoading } = useSelector(mapState);
+	const { addCommentLoading } = useSelector(mapState);
 	const [showMoreComments, setShowMoreComments] = useState<boolean>(false);
 	const {
 		fetchNextPage,
@@ -58,15 +57,19 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 		(e) => {
 			e.preventDefault();
 			if (!postId) return;
-			dispatch(addCommentPost({ id: postId, message: commentValue.trim() }));
+			dispatch(
+				addCommentPost({
+					id: postId,
+					message: commentValue.trim(),
+					onComplete: () => {
+						mutate();
+					},
+				})
+			);
 			setCommentValue("");
 		},
-		[dispatch, postId, commentValue]
+		[dispatch, postId, commentValue, mutate]
 	);
-
-	useEffect(() => {
-		addedComment && mutate();
-	}, [mutate, addedComment]);
 
 	return (
 		<>
@@ -134,7 +137,7 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 					</div>
 				) : (
 					hasNextPage && (
-						<TextSpan style={{ margin: "0 auto 10px" }}>
+						<TextSpan style={{ margin: "10px auto" }}>
 							No more comments
 						</TextSpan>
 					)
@@ -154,7 +157,7 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 					size="small"
 					variant="default"
 					type="submit"
-					disabled={!commentValue}
+					disabled={!commentValue.trim()}
 					loading={addCommentLoading}
 				>
 					Publish

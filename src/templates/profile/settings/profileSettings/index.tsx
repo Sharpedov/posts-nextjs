@@ -56,7 +56,7 @@ const ProfileSettings = ({}: IProps) => {
 				updateProfile({
 					avatar: uploadAvatarUrl ?? user.avatar,
 					banner: uploadBannerUrl ?? user.banner,
-					description: descriptionValue,
+					description: descriptionValue.trim(),
 					onComplete: () => {
 						dispatch(resetUploadAvatar());
 						dispatch(resetUploadBanner());
@@ -82,7 +82,7 @@ const ProfileSettings = ({}: IProps) => {
 				(!!uploadAvatarUrl ||
 					!!uploadBannerUrl ||
 					updateProfileLoading ||
-					user.description !== descriptionValue) ??
+					user.description !== descriptionValue.trim()) ??
 				!!descriptionValue
 			)
 				return false;

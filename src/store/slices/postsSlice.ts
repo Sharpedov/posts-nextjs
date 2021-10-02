@@ -36,6 +36,7 @@ interface IGetPost {
 interface IAddCommentPost {
 	id;
 	message: string;
+	onComplete?: () => void;
 }
 
 export const createPost = createAsyncThunk(
@@ -170,7 +171,10 @@ export const deletePost = createAsyncThunk(
 
 export const addCommentPost = createAsyncThunk(
 	"posts/addCommentPost",
-	async ({ id, message }: IAddCommentPost, { getState, dispatch }) => {
+	async (
+		{ id, message, onComplete }: IAddCommentPost,
+		{ getState, dispatch }
+	) => {
 		try {
 			const {
 				auth: { user },
@@ -178,19 +182,17 @@ export const addCommentPost = createAsyncThunk(
 
 			if (!user) throw "User are not logged in";
 
-			const comment = await authPoster(`/api/posts/${id}/comment`, {
+			await authPoster(`/api/posts/${id}/comment`, {
 				message,
 				userId: user._id,
 			});
 
 			await mutate(`/api/posts/${id}`);
+			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Comment added" }));
 
-			return {
-				...comment,
-				user: { _id: user._id, avatar: user.avatar, username: user.username },
-			};
+			return;
 		} catch (error) {
 			dispatch(addNotification({ message: error.response.data.message }));
 			throw error.response.data.message;
@@ -241,7 +243,6 @@ const initialState = {
 		error: null,
 	},
 	addComment: {
-		comment: {},
 		loading: false,
 		error: null,
 	},
@@ -338,14 +339,12 @@ const postsSlice = createSlice({
 			state.dislike.error = action.error.message;
 		});
 
-		// add comment ////
+		// add comment to post ////
 		builder.addCase(addCommentPost.pending, (state) => {
-			state.addComment.comment = {};
 			state.addComment.loading = true;
 			state.addComment.error = null;
 		});
-		builder.addCase(addCommentPost.fulfilled, (state, action) => {
-			state.addComment.comment = action.payload;
+		builder.addCase(addCommentPost.fulfilled, (state) => {
 			state.addComment.loading = false;
 		});
 		builder.addCase(addCommentPost.rejected, (state, action) => {
