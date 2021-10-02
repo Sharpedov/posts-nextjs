@@ -115,7 +115,9 @@ const Posts = ({ queryKeyWithLimit }: IProps) => {
 								))}
 							</Masonry>
 						)}
-						{isLoadingMore && <ScaleLoading center marginTop={30} />}
+						{isLoadingMore && !isLoadingInitialData && (
+							<ScaleLoading center marginTop={30} />
+						)}
 						{isEmpty ? (
 							<div
 								style={{

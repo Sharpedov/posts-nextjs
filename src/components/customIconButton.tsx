@@ -129,7 +129,7 @@ const StyledIconButton = styled(IconButton)`
 	}
 
 	&:hover {
-		background: rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.08);
 		color: ${({ changecoloronhover, theme }) =>
 			changecoloronhover && theme.colors.button.primary};
 		.customIconButton__icon {

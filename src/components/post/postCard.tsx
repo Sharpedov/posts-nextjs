@@ -13,11 +13,11 @@ import PostDetails from "./postDetails";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { PostLikeHandler } from "src/utils/postLikeHandler";
 import PostMoreOptions from "./postMoreOptions";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { RiChat3Line } from "react-icons/ri";
 
 type RefType = HTMLDivElement;
 type IProps = {
@@ -31,7 +31,6 @@ const mapState = (state) => ({
 const PostCard = React.forwardRef(
 	({ post }: IProps, ref: React.ForwardedRef<RefType>) => {
 		const {
-			title,
 			createdAt,
 			creator,
 			creatorImage,
@@ -155,36 +154,40 @@ const PostCard = React.forwardRef(
 						)}
 					</Content>
 					<Actions>
-						<ActionItem>
-							<CustomIconButton
-								Icon={isLiked ? ThumbUpIcon : ThumbUpAltOutlinedIcon}
-								ariaLabel={isLiked ? "Dislike post" : "Like post"}
-								size="small"
-								changeColorOnHover={true}
-								active={isLiked}
-								disabled={likeDislikeLoading}
-								onClick={() => likeHandler({ postId: _id })}
-							/>
-							<span>{likes.length}</span>
-						</ActionItem>
-						<ActionItem>
-							<CustomIconButton
-								Icon={OpenInNewIcon}
-								ariaLabel="View in new page"
-								size="small"
-								changeColorOnHover={true}
-								href={`/post/${_id}`}
-							/>
-						</ActionItem>
-						<ActionItem>
-							<CustomIconButton
-								Icon={VisibilityIcon}
-								ariaLabel="View in modal"
-								size="small"
-								changeColorOnHover={true}
-								onClick={() => setPostDetailsModalIsOpen((prev) => !prev)}
-							/>
-						</ActionItem>
+						<ActionsColumn1>
+							<ActionItem>
+								<CustomIconButton
+									Icon={isLiked ? ThumbUpIcon : ThumbUpAltOutlinedIcon}
+									ariaLabel={isLiked ? "Dislike post" : "Like post"}
+									size="verySmall"
+									changeColorOnHover={true}
+									active={isLiked}
+									disabled={likeDislikeLoading}
+									onClick={() => likeHandler({ postId: _id })}
+								/>
+								<span>{likes.length}</span>
+							</ActionItem>
+							<ActionItem>
+								<CustomIconButton
+									Icon={RiChat3Line}
+									ariaLabel="Open comments"
+									size="verySmall"
+									changeColorOnHover={true}
+									href={`/post/${_id}`}
+								/>
+							</ActionItem>
+						</ActionsColumn1>
+						<ActionsColumn2>
+							<ActionItem>
+								<CustomIconButton
+									Icon={VisibilityIcon}
+									ariaLabel="View in modal"
+									size="verySmall"
+									changeColorOnHover={true}
+									onClick={() => setPostDetailsModalIsOpen((prev) => !prev)}
+								/>
+							</ActionItem>
+						</ActionsColumn2>
 					</Actions>
 				</PostItem>
 			</>
@@ -301,17 +304,25 @@ const Tag = styled.li`
 
 const Actions = styled.div`
 	display: flex;
-	place-content: center space-around;
+	place-content: center space-between;
 	gap: 0 10px;
 	padding: 0 10px 7px 10px;
 	gap: 7px;
 `;
 
+const ActionsColumn1 = styled.div`
+	display: flex;
+	gap: 0 5px;
+	align-items: center;
+`;
+
+const ActionsColumn2 = styled(ActionsColumn1)``;
+
 const ActionItem = styled.div`
 	display: flex;
 	align-items: center;
 	text-transform: none;
-	font-size: 1.7rem;
+	font-size: 1.5rem;
 	color: ${({ theme }) => theme.colors.color.primary};
 	font-weight: 400;
 	transition: all 0.15s ease;
@@ -319,6 +330,8 @@ const ActionItem = styled.div`
 
 	> span {
 		margin-left: 2px;
+		opacity: 0.8;
+		line-height: 1;
 	}
 
 	.postAction__icon {

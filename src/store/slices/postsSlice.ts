@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
 	authDeleter,
@@ -32,6 +32,10 @@ interface IDeletePost {
 interface IGetPost {
 	id;
 	onComplete?: () => void;
+}
+interface IAddCommentPost {
+	id;
+	message: string;
 }
 
 export const createPost = createAsyncThunk(
@@ -164,6 +168,36 @@ export const deletePost = createAsyncThunk(
 	}
 );
 
+export const addCommentPost = createAsyncThunk(
+	"posts/addCommentPost",
+	async ({ id, message }: IAddCommentPost, { getState, dispatch }) => {
+		try {
+			const {
+				auth: { user },
+			} = getState() as any;
+
+			if (!user) throw "User are not logged in";
+
+			const comment = await authPoster(`/api/posts/${id}/comment`, {
+				message,
+				userId: user._id,
+			});
+
+			await mutate(`/api/posts/${id}`);
+
+			dispatch(addNotification({ message: "Comment added" }));
+
+			return {
+				...comment,
+				user: { _id: user._id, avatar: user.avatar, username: user.username },
+			};
+		} catch (error) {
+			dispatch(addNotification({ message: error.response.data.message }));
+			throw error.response.data.message;
+		}
+	}
+);
+
 export const getPost = createAsyncThunk(
 	"posts/getPost",
 	async ({ id }: IGetPost, { dispatch }) => {
@@ -203,6 +237,11 @@ const initialState = {
 		error: null,
 	},
 	dislike: {
+		loading: false,
+		error: null,
+	},
+	addComment: {
+		comment: {},
 		loading: false,
 		error: null,
 	},
@@ -297,6 +336,21 @@ const postsSlice = createSlice({
 		builder.addCase(dislikePost.rejected, (state, action) => {
 			state.dislike.loading = false;
 			state.dislike.error = action.error.message;
+		});
+
+		// add comment ////
+		builder.addCase(addCommentPost.pending, (state) => {
+			state.addComment.comment = {};
+			state.addComment.loading = true;
+			state.addComment.error = null;
+		});
+		builder.addCase(addCommentPost.fulfilled, (state, action) => {
+			state.addComment.comment = action.payload;
+			state.addComment.loading = false;
+		});
+		builder.addCase(addCommentPost.rejected, (state, action) => {
+			state.addComment.loading = false;
+			state.addComment.error = action.error.message;
 		});
 	},
 });

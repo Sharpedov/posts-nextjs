@@ -1,4 +1,5 @@
 import dbConnect from "mongodb/dbConnect";
+import PostComment from "mongodb/models/PostComment";
 import PostMessage from "mongodb/models/PostMessage";
 
 export default async function handler(req, res) {
@@ -13,12 +14,15 @@ export default async function handler(req, res) {
 		case "GET":
 			{
 				try {
-					console.log("id", id);
 					const data = await PostMessage.findById(id);
 
 					if (!data) return res.status(400).json({ success: false });
 
-					res.status(200).json(data);
+					const commentsCount = await PostComment.find({
+						postId: id,
+					}).countDocuments();
+
+					res.status(200).json({ ...data._doc, commentsCount });
 				} catch (error) {
 					res.status(400).json(error);
 				}

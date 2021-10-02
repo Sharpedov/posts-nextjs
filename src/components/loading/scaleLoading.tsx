@@ -5,9 +5,10 @@ interface IProps {
 	marginTop?: number;
 	marginBottom?: number;
 	center?: boolean;
+	size?: "small" | "large";
 }
 
-const ScaleLoading = ({ marginTop, marginBottom, center }: IProps) => {
+const ScaleLoading = ({ marginTop, marginBottom, center, size }: IProps) => {
 	return (
 		<Spinner
 			style={{
@@ -16,6 +17,7 @@ const ScaleLoading = ({ marginTop, marginBottom, center }: IProps) => {
 				marginLeft: center ? "auto" : 0,
 				marginRight: center ? "auto" : 0,
 			}}
+			size={size}
 		>
 			<div className="rect1"></div>
 			<div className="rect2"></div>
@@ -30,7 +32,7 @@ export default ScaleLoading;
 
 const Spinner = styled.div`
 	width: 70px;
-	height: 50px;
+	height: ${({ size }) => (size === "small" ? "27px" : "50px")};
 	text-align: center;
 	font-size: 10px;
 
@@ -38,8 +40,8 @@ const Spinner = styled.div`
 		display: inline-block;
 		background: ${({ theme }) => theme.colors.loading.secondary};
 		height: 100%;
-		width: 4px;
-		margin-right: 5px;
+		width: ${({ size }) => (size === "small" ? "2px" : "4px")};
+		margin-right: ${({ size }) => (size === "small" ? "4px" : "5px")};
 		-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
 		animation: sk-stretchdelay 1.2s infinite ease-in-out;
 	}

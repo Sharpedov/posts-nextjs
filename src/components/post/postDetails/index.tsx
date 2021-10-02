@@ -15,6 +15,8 @@ import PostMoreOptions from "../postMoreOptions";
 import moment from "moment";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import { motion } from "framer-motion";
+import PostComments from "./postComments";
+import { RiChat3Line } from "react-icons/ri";
 
 interface IProps {
 	postId;
@@ -131,7 +133,7 @@ const PostDetails = ({
 								<CustomIconButton
 									Icon={isLiked ? ThumbUpIcon : ThumbUpAltOutlinedIcon}
 									ariaLabel="Like post"
-									size="small"
+									size="verySmall"
 									changeColorOnHover={true}
 									active={isLiked}
 									disabled={likeDislikeLoading}
@@ -146,15 +148,22 @@ const PostDetails = ({
 							{isInModal && (
 								<ActionItem>
 									<CustomIconButton
-										Icon={OpenInNewIcon}
-										ariaLabel="View in new page"
-										size="small"
+										Icon={RiChat3Line}
+										ariaLabel="Open comments"
+										size="verySmall"
 										changeColorOnHover={true}
 										href={`/post/${postData._id}`}
 									/>
 								</ActionItem>
 							)}
 						</Actions>
+						{!isInModal && (
+							<PostComments
+								creatorUsername={postData.creator}
+								postId={postId}
+								commentsCount={postData.commentsCount}
+							/>
+						)}
 					</Row2>
 				</Container>
 			)}
@@ -277,8 +286,7 @@ const Tag = styled.li`
 
 const Actions = styled.div`
 	display: flex;
-	place-content: ${({ isInModal }) =>
-		isInModal ? "center space-around" : "center flex-start"};
+	place-content: center flex-start;
 	gap: 0 10px;
 	padding: 0 1.5rem;
 	margin-top: 10px;

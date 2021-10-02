@@ -31,8 +31,8 @@ export const darkGrayTheme = {
 	},
 
 	fonts: {
-		title: '"Roboto", "sans-serif"',
-		main: '"Open Sans", "sans-serif"',
+		title: '"Roboto", "Arial", "sans-serif"',
+		main: '"Open Sans", "Arial", "sans-serif"',
 	},
 
 	breakpoints: {
