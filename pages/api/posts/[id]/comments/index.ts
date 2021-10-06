@@ -61,22 +61,6 @@ export default authMiddleware(async function handler(req, res) {
 					if (!createdComment)
 						return res.status(400).json({ message: "Post was not created" });
 
-					// await PostComment.findOneAndUpdate(
-					// 	{ postId: id },
-					// 	{
-					// 		$push: {
-					// 			comments: {
-					// 				userId,
-					// 				message,
-					// 				createdAt: moment().format(),
-					// 			},
-					// 		},
-					// 	},
-					// 	{
-					// 		new: true,
-					// 	}
-					// );
-
 					res.status(200).json(createdComment);
 				} catch (error) {
 					res.status(400).json(error);

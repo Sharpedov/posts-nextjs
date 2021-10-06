@@ -36,13 +36,15 @@ const ProfileFollowers = (props) => {
 							key={`followers-${follow.username}`}
 						>
 							<FollowersItem key={`followers-${follow.username}`}>
-								<Image
-									layout="fill"
-									src={follow.avatar}
-									alt={follow.username}
-									draggable="false"
-									objectFit="cover"
-								/>
+								{follow.avatar && (
+									<Image
+										layout="fill"
+										src={follow.avatar}
+										alt={follow.username}
+										draggable="false"
+										objectFit="cover"
+									/>
+								)}
 								<FollowersItemOverlay>{follow.username}</FollowersItemOverlay>
 							</FollowersItem>
 						</Link>

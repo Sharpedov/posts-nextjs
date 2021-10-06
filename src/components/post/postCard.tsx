@@ -13,11 +13,11 @@ import PostDetails from "./postDetails";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import { PostLikeHandler } from "src/utils/postLikeHandler";
 import PostMoreOptions from "./postMoreOptions";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { RiChat3Line } from "react-icons/ri";
+import { PostHelper } from "src/utils/postHelper";
 
 type RefType = HTMLDivElement;
 type IProps = {
@@ -48,9 +48,9 @@ const PostCard = React.forwardRef(
 			useState<boolean>(false);
 		const {
 			isLiked,
-			likeHandler,
+			handleLikePost,
 			loading: likeDislikeLoading,
-		} = PostLikeHandler({ likes });
+		} = PostHelper({ likes });
 		const { query } = useRouter();
 
 		useEffect(() => {
@@ -163,7 +163,7 @@ const PostCard = React.forwardRef(
 									changeColorOnHover={true}
 									active={isLiked}
 									disabled={likeDislikeLoading}
-									onClick={() => likeHandler({ postId: _id })}
+									onClick={() => handleLikePost({ postId: _id })}
 								/>
 								<span>{likes.length}</span>
 							</ActionItem>

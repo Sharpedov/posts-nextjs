@@ -3,10 +3,9 @@ import { fetcher } from "src/utils/fetcher";
 import styled from "styled-components";
 import useSWR from "swr";
 import Link from "next/link";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
-import { PostLikeHandler } from "src/utils/postLikeHandler";
+import { PostHelper } from "src/utils/postHelper";
 import CustomIconButton from "src/components/customIconButton";
 import UserAvatar from "src/components/user/userAvatar";
 import ScaleLoading from "src/components/loading/scaleLoading";
@@ -42,9 +41,9 @@ const PostDetails = ({
 	const [moreOptionsIsOpen, setMoreOptionsIsOpen] = useState<boolean>(false);
 	const {
 		isLiked,
-		likeHandler,
+		handleLikePost,
 		loading: likeDislikeLoading,
-	} = PostLikeHandler({
+	} = PostHelper({
 		likes: postData?.error || !postData ? [] : postData?.likes,
 	});
 
@@ -63,7 +62,7 @@ const PostDetails = ({
 					<Row1>
 						<UserAvatarContainer>
 							<Link passHref href={`/profile/${postData.creator}`}>
-								<a>
+								<a tabIndex={-1}>
 									<UserAvatar
 										src={postData.creatorImage}
 										username={postData.creator}
@@ -138,7 +137,7 @@ const PostDetails = ({
 									active={isLiked}
 									disabled={likeDislikeLoading}
 									onClick={() =>
-										likeHandler({
+										handleLikePost({
 											postId: postData._id,
 										})
 									}

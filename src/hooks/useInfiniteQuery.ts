@@ -1,14 +1,16 @@
+import { authFetcher } from "src/utils/authAxiosMethods";
 import { fetcher } from "src/utils/fetcher";
 import { useSWRInfinite } from "swr";
 
 interface IProps {
 	queryKey;
+	authMethod?: boolean;
 }
 
-export const useInfiniteQuery = ({ queryKey }: IProps) => {
+export const useInfiniteQuery = ({ queryKey, authMethod }: IProps) => {
 	const { data, error, mutate, size, setSize, isValidating } = useSWRInfinite(
 		(index) => `${queryKey}&page=${index + 1}`,
-		fetcher,
+		authMethod ? authFetcher : fetcher,
 		{ revalidateAll: true }
 	);
 

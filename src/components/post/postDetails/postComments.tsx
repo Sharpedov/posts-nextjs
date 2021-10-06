@@ -1,14 +1,22 @@
 import moment from "moment";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "src/components/customButton";
 import UserAvatar from "src/components/user/userAvatar";
-import { addCommentPost } from "src/store/slices/postsSlice";
+import {
+	addCommentPost,
+	dislikeCommentPost,
+	likeCommentPost,
+} from "src/store/slices/postsSlice";
 import styled from "styled-components";
 import Link from "next/link";
 import { useInfiniteQuery } from "src/hooks/useInfiniteQuery";
 import ScaleLoading from "src/components/loading/scaleLoading";
 import CheckIcon from "@material-ui/icons/Check";
+import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbUpIcon from "@material-ui/icons/ThumbUpAlt";
+import CustomIconButton from "src/components/customIconButton";
+import { useUser } from "src/components/userProvider";
 
 interface IProps {
 	postId: string;
@@ -21,6 +29,7 @@ const mapState = (state) => ({
 });
 
 const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
+	const { user, isLogged } = useUser();
 	const { addCommentLoading } = useSelector(mapState);
 	const [showMoreComments, setShowMoreComments] = useState<boolean>(false);
 	const {
@@ -33,7 +42,8 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 		isEmpty,
 		mutate,
 	} = useInfiniteQuery({
-		queryKey: `/api/posts/${postId}/comment?limit=${showMoreComments ? 9 : 3}`,
+		queryKey: `/api/posts/${postId}/comments?limit=${showMoreComments ? 9 : 3}`,
+		authMethod: true,
 	});
 	const [commentValue, setCommentValue] = useState<string>("");
 	const dispatch = useDispatch();
@@ -56,7 +66,7 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 	const handleAddCommentSubmit = useCallback(
 		(e) => {
 			e.preventDefault();
-			if (!postId) return;
+			if (!postId && !isLogged) return;
 			dispatch(
 				addCommentPost({
 					id: postId,
@@ -68,7 +78,44 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 			);
 			setCommentValue("");
 		},
-		[dispatch, postId, commentValue, mutate]
+		[dispatch, postId, commentValue, mutate, isLogged]
+	);
+
+	const handleIsCommentLiked = useCallback(
+		(likes: String[]) => {
+			if (!isLogged) return;
+			return likes.find((like) => like === user._id);
+		},
+		[user, isLogged]
+	);
+
+	const handleLikeComment = useCallback(
+		(commentId, likes: String[]) => {
+			if (!postId && !isLogged) return;
+			const isLiked = handleIsCommentLiked(likes);
+
+			if (isLiked)
+				return dispatch(
+					dislikeCommentPost({
+						postId,
+						commentId,
+						onComplete: () => {
+							mutate();
+						},
+					})
+				);
+
+			dispatch(
+				likeCommentPost({
+					postId,
+					commentId,
+					onComplete: () => {
+						mutate();
+					},
+				})
+			);
+		},
+		[dispatch, postId, mutate, isLogged, handleIsCommentLiked]
 	);
 
 	return (
@@ -79,11 +126,11 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 				) : isLoadingInitialData ? (
 					<ScaleLoading center size="small" />
 				) : (
-					fetchedData.map(({ user, message, _id, createdAt }) => (
+					fetchedData.map(({ user, message, _id, createdAt, likes }) => (
 						<Comment key={_id} ref={lastItemRef}>
 							<CommentColumn1>
 								<Link passHref href={`/profile/${user.username}`}>
-									<a href={`/profile/${user.username}`}>
+									<a href={`/profile/${user.username}`} tabIndex={-1}>
 										<UserAvatar
 											src={user.avatar}
 											username={user.username}
@@ -105,8 +152,29 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 								<span>{message}</span>
 								<CommentInfo>
 									<span>{moment(createdAt).fromNow()}</span>
+									{likes.length !== 0 && (
+										<span>{`${likes.length} ${
+											likes.length > 1 ? "likes" : "like"
+										}`}</span>
+									)}
 								</CommentInfo>
 							</CommentColumn2>
+							<LikeCommentButton>
+								<CustomIconButton
+									size="verySmall"
+									ariaLabel={
+										handleIsCommentLiked(likes)
+											? "Dislike comment"
+											: "Like comment"
+									}
+									Icon={
+										handleIsCommentLiked(likes)
+											? ThumbUpIcon
+											: ThumbUpAltOutlinedIcon
+									}
+									onClick={() => handleLikeComment(_id, likes)}
+								/>
+							</LikeCommentButton>
 						</Comment>
 					))
 				)}
@@ -204,6 +272,7 @@ const CommentColumn1 = styled.div`
 const CommentColumn2 = styled.div`
 	display: inline-block;
 	flex-shrink: 1;
+	flex-grow: 1;
 	min-width: 0;
 
 	> h3,
@@ -242,6 +311,10 @@ const CommentColumn2 = styled.div`
 	}
 `;
 
+const LikeCommentButton = styled.div`
+	margin: 5px 0 0 5px;
+`;
+
 const AddCommentForm = styled.form`
 	display: flex;
 	align-items: center;
@@ -265,6 +338,8 @@ const CommentTextarea = styled.textarea`
 `;
 
 const CommentInfo = styled.div`
+	display: flex;
+	gap: 0 12px;
 	color: ${({ theme }) => theme.colors.color.primary};
 	margin: 1.1rem 0 0.3rem 0;
 

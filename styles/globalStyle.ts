@@ -38,7 +38,6 @@ const GlobalStyle = createGlobalStyle`
 
     a {
         text-decoration: none;
-        outline: none;
         color: inherit;
     }
 

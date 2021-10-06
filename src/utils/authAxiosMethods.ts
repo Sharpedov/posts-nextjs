@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import router from "next/router";
 
 const refreshTokens = async () =>
 	await axios.post("/api/auth/refresh", undefined, { withCredentials: true });

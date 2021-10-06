@@ -16,7 +16,7 @@ const mapState = (state) => ({
 	dislikePostLoading: state.posts.dislike.loading,
 });
 
-export const PostLikeHandler = ({ likes }: IPostLikeHandler) => {
+export const PostHelper = ({ likes }: IPostLikeHandler) => {
 	const { likePostLoading, dislikePostLoading } = useSelector(mapState);
 	const { user, isLogged } = useUser();
 	const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const PostLikeHandler = ({ likes }: IPostLikeHandler) => {
 		return;
 	}, [likes, user, isLogged]);
 
-	const likeHandler = useCallback(
+	const handleLikePost = useCallback(
 		({ postId, onComplete }: ILikeHandler) => {
 			if (isLogged) {
 				return isLikedFilter
@@ -41,7 +41,7 @@ export const PostLikeHandler = ({ likes }: IPostLikeHandler) => {
 
 	return {
 		isLiked: isLikedFilter,
-		likeHandler,
+		handleLikePost,
 		loading: likePostLoading || dislikePostLoading,
 	};
 };

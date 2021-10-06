@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
 	authDeleter,
@@ -38,6 +38,11 @@ interface IAddCommentPost {
 	message: string;
 	onComplete?: () => void;
 }
+interface ILikeCommentPost {
+	postId: string;
+	commentId: string;
+	onComplete?: () => void;
+}
 
 export const createPost = createAsyncThunk(
 	"posts/createPost",
@@ -48,7 +53,7 @@ export const createPost = createAsyncThunk(
 			} = getState() as any;
 			const data = await authPoster("/api/posts/create", postData);
 
-			await mutatePosts();
+			mutatePosts && (await mutatePosts());
 			onComplete && onComplete();
 
 			return { data };
@@ -71,7 +76,7 @@ export const editPost = createAsyncThunk(
 				post: postData,
 			});
 
-			await mutatePosts();
+			mutatePosts && (await mutatePosts());
 			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
@@ -102,12 +107,12 @@ export const likePost = createAsyncThunk(
 				userId: user._id,
 			});
 
-			await mutatePosts();
+			mutatePosts && (await mutatePosts());
 			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 			dispatch(addNotification({ message: "Liked" }));
 
-			return { data };
+			return;
 		} catch (error) {
 			dispatch(addNotification({ message: error.response.data.message }));
 			throw error.response.data.message;
@@ -127,17 +132,17 @@ export const dislikePost = createAsyncThunk(
 
 			if (!user) throw "User are not logged in";
 
-			const data = await authPatcher(`/api/posts/${id}/dislike`, {
+			await authPatcher(`/api/posts/${id}/dislike`, {
 				userId: user._id,
 			});
 
-			await mutatePosts();
+			mutatePosts && (await mutatePosts());
 			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Disliked" }));
 
-			return { data };
+			return;
 		} catch (error) {
 			dispatch(addNotification({ message: error.response.data.message }));
 			throw error.response.data.message;
@@ -155,7 +160,7 @@ export const deletePost = createAsyncThunk(
 
 			const data = await authDeleter(`/api/posts/${id}/manage`);
 
-			await mutatePosts();
+			mutatePosts && (await mutatePosts());
 			await mutate(`/api/posts/${id}`);
 			onComplete && onComplete();
 
@@ -182,7 +187,7 @@ export const addCommentPost = createAsyncThunk(
 
 			if (!user) throw "User are not logged in";
 
-			await authPoster(`/api/posts/${id}/comment`, {
+			await authPoster(`/api/posts/${id}/comments`, {
 				message,
 				userId: user._id,
 			});
@@ -191,6 +196,61 @@ export const addCommentPost = createAsyncThunk(
 			onComplete && onComplete();
 
 			dispatch(addNotification({ message: "Comment added" }));
+
+			return;
+		} catch (error) {
+			dispatch(addNotification({ message: error.response.data.message }));
+			throw error.response.data.message;
+		}
+	}
+);
+
+export const likeCommentPost = createAsyncThunk(
+	"posts/likeCommentPost",
+	async (
+		{ postId, commentId, onComplete }: ILikeCommentPost,
+		{ dispatch, getState }
+	) => {
+		try {
+			const {
+				auth: { user },
+			} = getState() as any;
+			if (!user) throw "User are not logged in";
+
+			await authPatcher(`/api/posts/${postId}/comments/like`, {
+				userId: user._id,
+				commentId,
+			});
+			onComplete && onComplete();
+
+			dispatch(addNotification({ message: "Liked comment" }));
+
+			return;
+		} catch (error) {
+			dispatch(addNotification({ message: error.response.data.message }));
+			throw error.response.data.message;
+		}
+	}
+);
+export const dislikeCommentPost = createAsyncThunk(
+	"posts/dislikeCommentPost",
+	async (
+		{ postId, commentId, onComplete }: ILikeCommentPost,
+		{ dispatch, getState }
+	) => {
+		try {
+			const {
+				auth: { user },
+			} = getState() as any;
+			if (!user) throw "User are not logged in";
+
+			await authPatcher(`/api/posts/${postId}/comments/dislike`, {
+				userId: user._id,
+				commentId,
+			});
+			onComplete && onComplete();
+
+			dispatch(addNotification({ message: "Disliked" }));
 
 			return;
 		} catch (error) {
@@ -246,6 +306,10 @@ const initialState = {
 		loading: false,
 		error: null,
 	},
+	likeComment: {
+		loading: false,
+		error: null,
+	},
 };
 
 const postsSlice = createSlice({
@@ -286,7 +350,7 @@ const postsSlice = createSlice({
 			state.delete.error = action.error.message;
 		});
 
-		// get post ////
+		//// get post ////
 		builder.addCase(getPost.pending, (state) => {
 			state.post.loading = true;
 			state.post.error = null;
@@ -300,7 +364,7 @@ const postsSlice = createSlice({
 			state.post.error = action.error.message;
 		});
 
-		// update post ////
+		//// update post ////
 		builder.addCase(editPost.pending, (state) => {
 			state.edit.loading = true;
 			state.edit.error = null;
@@ -313,7 +377,7 @@ const postsSlice = createSlice({
 			state.edit.error = action.error.message;
 		});
 
-		// like post ////
+		//// like post ////
 		builder.addCase(likePost.pending, (state) => {
 			state.like.loading = true;
 			state.like.error = null;
@@ -326,7 +390,7 @@ const postsSlice = createSlice({
 			state.like.error = action.error.message;
 		});
 
-		// dislike post ////
+		//// dislike post ////
 		builder.addCase(dislikePost.pending, (state) => {
 			state.dislike.loading = true;
 			state.dislike.error = null;
@@ -339,7 +403,7 @@ const postsSlice = createSlice({
 			state.dislike.error = action.error.message;
 		});
 
-		// add comment to post ////
+		//// add comment to post ////
 		builder.addCase(addCommentPost.pending, (state) => {
 			state.addComment.loading = true;
 			state.addComment.error = null;
@@ -350,6 +414,31 @@ const postsSlice = createSlice({
 		builder.addCase(addCommentPost.rejected, (state, action) => {
 			state.addComment.loading = false;
 			state.addComment.error = action.error.message;
+		});
+
+		//// like and dislike post comment ////
+		builder.addCase(likeCommentPost.pending, (state) => {
+			state.likeComment.loading = true;
+			state.likeComment.error = null;
+		});
+		builder.addCase(likeCommentPost.fulfilled, (state) => {
+			state.likeComment.loading = false;
+		});
+		builder.addCase(likeCommentPost.rejected, (state, action) => {
+			state.likeComment.loading = false;
+			state.likeComment.error = action.error.message;
+		});
+
+		builder.addCase(dislikeCommentPost.pending, (state) => {
+			state.likeComment.loading = true;
+			state.likeComment.error = null;
+		});
+		builder.addCase(dislikeCommentPost.fulfilled, (state) => {
+			state.likeComment.loading = false;
+		});
+		builder.addCase(dislikeCommentPost.rejected, (state, action) => {
+			state.likeComment.loading = false;
+			state.likeComment.error = action.error.message;
 		});
 	},
 });
