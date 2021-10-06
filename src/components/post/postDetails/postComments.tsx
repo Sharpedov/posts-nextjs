@@ -26,11 +26,12 @@ interface IProps {
 
 const mapState = (state) => ({
 	addCommentLoading: state.posts.addComment.loading,
+	likeCommentLoading: state.posts.likeComment.loading,
 });
 
 const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 	const { user, isLogged } = useUser();
-	const { addCommentLoading } = useSelector(mapState);
+	const { addCommentLoading, likeCommentLoading } = useSelector(mapState);
 	const [showMoreComments, setShowMoreComments] = useState<boolean>(false);
 	const {
 		fetchNextPage,
@@ -173,6 +174,7 @@ const PostComments = ({ postId, commentsCount, creatorUsername }: IProps) => {
 											: ThumbUpAltOutlinedIcon
 									}
 									onClick={() => handleLikeComment(_id, likes)}
+									disabled={likeCommentLoading}
 								/>
 							</LikeCommentButton>
 						</Comment>
