@@ -50,7 +50,7 @@ const ProfileSettings = ({}: IProps) => {
 		dispatch(resetUploadAvatar());
 	}, [dispatch]);
 
-	const updateProfileHandler = useCallback(() => {
+	const handleUpdateProfile = useCallback(() => {
 		isLogged &&
 			dispatch(
 				updateProfile({
@@ -76,13 +76,13 @@ const ProfileSettings = ({}: IProps) => {
 		isLogged && setDescriptionValue(user.description);
 	}, [user, isLogged]);
 
-	const disabledButtonSaveHandler = useMemo(() => {
+	const handleDisableSaveButton = useMemo(() => {
 		if (isLogged) {
 			if (
 				(!!uploadAvatarUrl ||
 					!!uploadBannerUrl ||
 					updateProfileLoading ||
-					user.description !== descriptionValue.trim()) ??
+					user.description !== descriptionValue?.trim()) ??
 				!!descriptionValue
 			)
 				return false;
@@ -114,11 +114,11 @@ const ProfileSettings = ({}: IProps) => {
 					<CustomButton
 						style={{ position: "absolute", top: "10px", right: "15px" }}
 						size="small"
-						disabled={disabledButtonSaveHandler}
+						disabled={handleDisableSaveButton}
 						loading={
 							updateProfileLoading || uploadAvatarLoading || uploadBannerLoading
 						}
-						onClick={updateProfileHandler}
+						onClick={handleUpdateProfile}
 					>
 						Save
 					</CustomButton>
