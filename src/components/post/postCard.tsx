@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import moment from "moment";
@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { RiChat3Line } from "react-icons/ri";
 import { PostHelper } from "src/utils/postHelper";
+import PostUserInfoOverlay from "./postUserInfoOverlay";
 
 type RefType = HTMLDivElement;
 type IProps = {
@@ -46,12 +47,14 @@ const PostCard = React.forwardRef(
 			useState<boolean>(false);
 		const [postDetailsIsOpen, setPostDetailsModalIsOpen] =
 			useState<boolean>(false);
+		const [isUserInfoOverlayOpen, setIsUserInfoOverlayOpen] = useState(false);
 		const {
 			isLiked,
 			handleLikePost,
 			loading: likeDislikeLoading,
 		} = PostHelper({ likes });
 		const { query } = useRouter();
+		const avatarContainerRef = useRef<HTMLDivElement>(null!);
 
 		useEffect(() => {
 			!deleteLoading && setLoadingWhileDelete(false);
@@ -92,11 +95,23 @@ const PostCard = React.forwardRef(
 				>
 					<TopBar>
 						<div style={{ display: "flex", gap: "10px" }}>
-							<Link passHref href={`/profile/${creator}`}>
-								<a href={`/profile/${creator}`}>
-									<UserAvatar src={creatorImage} username={creator} />
-								</a>
-							</Link>
+							<div
+								ref={avatarContainerRef}
+								style={{ position: "relative" }}
+								onMouseEnter={() => setIsUserInfoOverlayOpen(true)}
+								onMouseLeave={() => setIsUserInfoOverlayOpen(false)}
+							>
+								<Link passHref href={`/profile/${creator}`}>
+									<a href={`/profile/${creator}`}>
+										<UserAvatar src={creatorImage} username={creator} />
+									</a>
+								</Link>
+								<PostUserInfoOverlay
+									isOpen={isUserInfoOverlayOpen}
+									creator={creator}
+									boundingClientRect={avatarContainerRef.current?.getBoundingClientRect()}
+								/>
+							</div>
 							<Column>
 								<Link passHref href={`/profile/${creator}`}>
 									<a href={`/profile/${creator}`}>
@@ -214,7 +229,6 @@ const PostItem = styled(motion.div)`
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	overflow: hidden;
 	animation: ${postAppear} 0.2s linear;
 	background: ${({ theme }) => theme.colors.background.secondary};
 
